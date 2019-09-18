@@ -263,13 +263,9 @@ btyper3 --version
   
 A single BTyper3 run will deposit the following in your specified output directory (```--output```):
   
-```btyper3_final_results```
-*directory*
-Final results directory in which BTyper3 deposits all of its output files. BTyper3 creates this directory in your specified output directory (```--output```) 
+```btyper3_final_results``` (*directory*): Final results directory in which BTyper3 deposits all of its output files. BTyper3 creates this directory in your specified output directory (```--output```) 
 
-```your_genome_final_results.txt```
-*file*
-Final tab-separated text file, 1 per input genome. BTyper3 creates this file, which has a header (denoted with "#"), followed by a single row containing results for the input genome, where where columns contain the following:
+```your_genome_final_results.txt``` (*file*): Final tab-separated text file, 1 per input genome. BTyper3 creates this file, which has a header (denoted with "#"), followed by a single row containing results for the input genome, where where columns contain the following:
 
 * **Column 1: #filename**
 The path to the fasta file supplied as input.
@@ -292,28 +288,18 @@ Number of anthrax toxin-encoding genes detected in the input genome, out of the 
 * **Column 7: Bt(genes)**
 Total number of *Bacillus thuringiensis* toxin (Bt toxin) genes detected in the input genome. Bt toxin genes detected in the input genome are listed in parentheses.
 
-* **Column 8: final_taxon_names
+* **Column 8: final_taxon_names**
 Taxonomic assignment of the isolate, written from longest (species, subspecies [if applicable], and biovars [if applicable]) to shortest (biovars, if applicable) form. If the input genome does not share >= 92.5 ANI with any known *B. cereus* group species medoid genome (i.e., there is an asterisk appended to the species name in the "species(ANI)" column), a species designation of "(Species unknown)" is given (this designation is also used if species assignment is not performed, i.e., ```--ani_species False```). If 2 or more anthrax toxin genes and/or cereulide synthetaste genes are detected in the input genome, but one or more anthrax toxin genes and cereulide synthetase genes are missing, respectively, an asterisk is appended to the biovar (i.e., "Anthracis\*" and "Emeticus\*", respectively)
 
-```species```
-*directory*
-Directory in which BTyper3 deposits raw fastANI output files during species assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/species```).
+```species``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during species assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/species```).
 
-```subspecies```
-*directory*
-Directory in which BTyper3 deposits raw fastANI output files during subspecies assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/subspecies```).
+```subspecies``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during subspecies assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/subspecies```).
 
-```virulence```
-*directory*
-Directory in which BTyper3 deposits raw blast output files during virulence gene detection. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/virulence```).
+```virulence``` (*directory*): Directory in which BTyper3 deposits raw blast output files during virulence gene detection. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/virulence```).
 
-```bt```
-*directory*
-Directory in which BTyper3 deposits raw blast output files during Bt gene detection. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/bt```).
+```bt``` (*directory*): Directory in which BTyper3 deposits raw blast output files during Bt gene detection. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/bt```).
 
-```logs```
-*directory*
-Directory in which BTyper3 deposits its log files for a run. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/logs```).
+```logs``` (*directory*): Directory in which BTyper3 deposits its log files for a run. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/logs```).
 
 
 ------------------------------------------------------------------------
@@ -354,7 +340,7 @@ For help, type ```build_btyper3_anib_db.py -h``` or ```build_btyper3_anib_db.py 
   
 ## Frequently Asked Questions
 
-* **What's the difference between BTyper3 and the original BTyper?
+* **What's the difference between BTyper3 and the original BTyper?**
 
 BTyper3 is a completely novel tool for determining the identity of *B. cereus* group isolates using WGS data and a standardized taxonomic nomenclature. Unlike its predecessor, which focused on gene detection and required a signifcant amount of user knowledge/interpretation, BTyper3 aims to provide taxonomic classifications at a whole-genome scale which require minimal user interpretation/prior domain-specific knowledge of the *B. cereus* group.
   
