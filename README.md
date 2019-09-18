@@ -409,11 +409,11 @@ We're directing BTyper3 to our input file (JHQN01.1.fsa_nt)
 * **-o ~/Downloads/btyper3_tutorial_1**
 We're telling BTyper3 where to store the output files it produces (our directory, btyper3_tutorial_1)
 
-7. Once the program is finished running, we can take a look at our final results file to get detailed results about our isolate. Open the "JHQN01_final_results.txt" file in any text editor, either by searching for it or opening it in your "~/Downloads/btyper3_tutorial_1/btyper3_final_results" directory.
+7. Once the program is finished running, we can take a look at our final results file to get detailed results about our isolate. Open the "JHQN01.1_final_results.txt" file in any text editor, either by searching for it or opening it in your "~/Downloads/btyper3_tutorial_1/btyper3_final_results" directory.
 
-8. Now that we've opened the final results file for our isolate, we can see information about our isolate/
+8. Now that we've opened the final results file for our isolate, we can see all taxonomic classifications for our isolate in the column "final_taxon_names". According to BTyper3, our genome's full taxonomic classification is *B. mosaicus* biovar Anthracis. This can also be written as *B.* Anthracis, meaning that our genome possesses anthrax toxin-encoding genes! We can see that all three toxin genes, *cya, lef,* and *pagA*, were detected in our genome (column "anthrax_toxin(genes)"). No cereulide synthetase genes were detected (column name "cereulide(genes)").
   
-Sure enough, this genome is actually that of *B. cereus* strain BcFL2013, which was isolated from a patient with an anthrax-like skin lesion in Florida (Gee, et al., 2014, *Genome Announcements*). It's been shown to possess anthrax toxin genes and belong to ST 78, the same ST as several other anthrax-causing *B. cereus* strains (Gee, et al., 2014, *Genome Announcements*).
+Sure enough, this genome is actually that of strain BcFL2013, an isolate previously classified as "anthrax-causing *B. cereus* which was isolated from a patient with an anthrax-like skin lesion in Florida (Gee, et al., 2014, *Genome Announcements*).
 
 9. If you want to delete the results from this tutorial, just go to your Downloads folder and delete the "btyper3_tutorial_1" directory there.
 
