@@ -165,12 +165,12 @@ build_btyper3_anib_db.py -db full
 
 For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 87M disk space):
 ```
-build_btyper_anib_db.py -db species-only
+build_btyper3_anib_db.py -db species-only
 ```
 
 For subspecies-only database, which can be used to perform subspecies assignment (but not species assignment; needs about 11M disk space):
 ```
-build_btyper_anib_db.py -db subspecies-only
+build_btyper3_anib_db.py -db subspecies-only
 ```
 
 After running any command, follow the instructions in your terminal.
@@ -244,6 +244,19 @@ Optional arguments are:
                         Optional argument for use with --bt True; integer from
                         0 to 100; minimum percent coverage threshold for a Bt
                         toxin gene to be considered present; default = 70
+  --bt_overlap [BT_OVERLAP]
+                        Optional argument for use with --bt True; float from 0
+                        to 1; specify maximum proportion of overlap for
+                        overlapping Bt toxin genes to be considered separate
+                        genes; Bt toxin genes below this threshold will be
+                        considered separate, while those above it will be
+                        considered overlapping, and only the top hit will be
+                        reported; default=0.7
+  --evalue [EVALUE]     Optional argument for use with --virulence True and/or
+                        --bt True; float >= 0; maximum blast e-value for a hit
+                        to be saved; note that if both --virulence True and
+                        --bt True, this e-value threshold will be applied to
+                        both analyses; default = 1e-5
 ```
 
 For help:
@@ -286,7 +299,7 @@ Number of cereulide synthetase-encoding genes detected in the input genome, out 
 Number of anthrax toxin-encoding genes detected in the input genome, out of the total number of anthrax toxin genes required for a genome to be assigned to biovar Anthracis. Anthrax toxin genes detected in the input genome are listed in parentheses.
 
 * **Column 7: Bt(genes)**
-Total number of *Bacillus thuringiensis* toxin (Bt toxin) genes detected in the input genome. Bt toxin genes detected in the input genome are listed in parentheses.
+Total number of *Bacillus thuringiensis* toxin (Bt toxin) genes detected in the input genome. Bt toxin genes detected in the input genome are listed in parentheses. **Note: BTyper3 currently detects known Bt toxin genes (i.e., those present in the <a href="http://www.btnomenclature.info/">Bt toxin nomenclature database</a>; accessed September 19, 2019)  using translated nucleotide blast (tblastn). This approach is conservative to reflect the analyses conducted in the manuscript (i.e., to limit false positives).**
 
 * **Column 8: final_taxon_names**
 Taxonomic assignment of the isolate, written from longest (species, subspecies [if applicable], and biovars [if applicable]) to shortest (biovars, if applicable) form. If the input genome does not share >= 92.5 ANI with any known *B. cereus* group species medoid genome (i.e., there is an asterisk appended to the species name in the "species(ANI)" column), a species designation of "(Species unknown)" is given (this designation is also used if species assignment is not performed, i.e., ```--ani_species False```). If 2 or more anthrax toxin genes and/or cereulide synthetaste genes are detected in the input genome, but one or more anthrax toxin genes and cereulide synthetase genes are missing, respectively, an asterisk is appended to the biovar (i.e., "Anthracis\*" and "Emeticus\*", respectively)
@@ -436,7 +449,7 @@ Gee, JE, et al. Draft Genome Sequence of *Bacillus cereus* Strain BcFL2013, a Cl
 ------------------------------------------------------------------------
 
 
-Disclaimer: BTyper3 is pretty neat! However, no tool is perfect, and BTyper3 cannot definitively prove whether an isolate is pathogenic or resistant to a particular antimicrobial. As always, interpret your results with caution. We are not responsible for taxonomic misclassifications, misclassifications of an isolate's pathogenic potential, and/or misinterpretations (biological, statistical, or otherwise) of BTyper3 results.
+Disclaimer: BTyper3 is pretty neat! However, no tool is perfect, and BTyper3 cannot definitively prove whether an isolate is pathogenic or not. As always, interpret your results with caution. We are not responsible for taxonomic misclassifications, misclassifications of an isolate's pathogenic potential or industrial utility, and/or misinterpretations (biological, statistical, or otherwise) of BTyper3 results.
 
 
 
