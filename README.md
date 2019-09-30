@@ -375,12 +375,12 @@ No; unlike its predecessor, BTyper3 requires whole genomes, as it relies on aver
 
 * **Can I use WGS data from organisms that don't belong to the *Bacillus cereus* group?**
   
-No; BTyper is a taxonomic tool which relies on ANI-based methods relative to *B. cereus* group genomes. Results for distant species won't be interpretable.
+No; BTyper3 is a taxonomic tool which relies on ANI-based methods relative to *B. cereus* group genomes. Results for distant species won't be interpretable.
 
 ------------------------------------------------------------------------
   
   
-## BTyper Tutorial #1: Characterizing a *B. cereus* isolate using its draft genome
+## BTyper3 Tutorial #1: Characterizing a *B. cereus* isolate using its draft genome
   
 1. First, let's download our isolate's draft genome from NCBI by clicking the follwoing link:
   
