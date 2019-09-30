@@ -12,9 +12,9 @@ Post issues at https://github.com/lmc297/BTyper3/issues
 
 ### Citation
 
-#### If you found the BTyper tool, its source code, and/or any of its associated databases useful, please cite:
+#### If you found the BTyper3 tool, its source code, and/or any of its associated databases useful, please cite:
   
-Carroll, Laura M., Martin Wiedmann, Jasna Kovac. 2019. BTyper3 version 0.0. https://github.com/lmc297/BTyper3.
+Carroll, Laura M., Martin Wiedmann, Jasna Kovac. 2019. "Proposal of a taxonomic nomenclature for the *Bacillus cereus* group which reconciles genomic definitions of bacterial species with clinical and industrial phenotypes." *bioRxiv* 779199; doi: https://doi.org/10.1101/779199.
 
 
 ------------------------------------------------------------------------
