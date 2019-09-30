@@ -317,7 +317,7 @@ Taxonomic assignment of the isolate, written from longest (species, subspecies [
 
 ------------------------------------------------------------------------
 
-## Additional BTyper Scripts (BTyper version 2.3.0 and up)
+## Additional BTyper3 Scripts
 
 ### build_btyper3_anib_db.py
 
