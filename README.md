@@ -76,25 +76,27 @@ pip3 install pandas
 pip3 install numpy
 ```
 
-6. Tap brewsci/bio, if necessary, by running the following command from your terminal:
+6. Follow the instructions to install <a href="https://github.com/ParBLiSS/FastANI">fastANI</a>, if necessary.
+
+7. Tap brewsci/bio, if necessary, by running the following command from your terminal:
 
 ```
 brew tap brewsci/bio
 ```
 
-7. Tap BTyper3 by running the following command from your terminal:
+8. Tap BTyper3 by running the following command from your terminal:
   
 ```
 brew tap lmc297/homebrew-btyper3
 ```
 
-6. Install BTyper3 and its dependencies by running the following command from your terminal:
+9. Install BTyper3 and its dependencies by running the following command from your terminal:
   
 ```
 brew install btyper3
 ```
 
-7. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
+10. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
 
 For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 98M disk space):
 
