@@ -229,7 +229,7 @@ def main():
 
 	parser.add_argument("--virulence_coverage", help = "Optional argument for use with --virulence True; integer from 0 to 100; minimum percent coverage threshold for a virulence gene to be considered present; default = 70", nargs = "?", default = 70)
 
-	parser.add_argument("--bt_identity", help = "Optional argument for use with --bt True; integer from 0 to 100; minimum percent amino acid identity threshold for a Bt toxin gene to be considered present; default = 70", nargs = "?", default = 50)
+	parser.add_argument("--bt_identity", help = "Optional argument for use with --bt True; integer from 0 to 100; minimum percent amino acid identity threshold for a Bt toxin gene to be considered present; default = 50", nargs = "?", default = 50)
 
 	parser.add_argument("--bt_coverage", help = "Optional argument for use with --bt True; integer from 0 to 100; minimum percent coverage threshold for a Bt toxin gene to be considered present; default = 70", nargs = "?", default = 70)
 
