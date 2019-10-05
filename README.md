@@ -139,12 +139,12 @@ After running any command, follow the instructions in your terminal.
     
 4. Download the BTyper3 source file, and store it in your directory of choice:
 
-https://github.com/lmc297/BTyper3/raw/master/archive/btyper-3.0.0.tar.gz
+https://github.com/lmc297/BTyper3/blob/master/archive/btyper-3.0.1.tar.gz
 
 5. Extract BTyper3 program/databases
 
 ```
-tar -xzvf btyper-3.0.0.tar.gz
+tar -xzvf btyper-3.0.1.tar.gz
 ```
 
 Note: to ensure that BTyper3 works correctly, make sure database directories (beginning with "seq_") remain in the same directory as the BTyper3 executable (stored as "btyper3").
