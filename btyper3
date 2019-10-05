@@ -1,0 +1,250 @@
+#!/usr/bin/env python3
+
+import sys, os, argparse, datetime, logging
+from Bio import SeqIO
+from ani import Ani
+from blast import Blast
+from print_final_results import FinalResults
+
+
+def run_pipeline(args):
+	"""
+	run btyper3
+	"""
+
+	# get path to btyper3 executable
+	btyper3_path = os.path.realpath(__file__)
+	btyper3_path = btyper3_path.rpartition("/")[0].strip() + "/"
+
+	# get input and output arguments and prefix to use for output files
+	infile = args.input[0]
+	prefix = infile.split("/")[-1].strip()
+	prefix = ".".join(prefix.split(".")[0:-1])
+	output = args.output[0]
+
+	# add a / to output directory name, if one is not already supplied
+	if not output.endswith("/"):
+		output = output.strip() + "/"
+
+	# if the output directory doesn't yet exist, make it
+	if not os.path.isdir(output):
+		os.mkdir(output)
+
+	# if a btyper3_final_results directory does not exist
+	# in the output directory, make it
+	if not os.path.isdir(output + "btyper3_final_results"):
+		os.mkdir(output + "btyper3_final_results/")
+
+	# make a logs directory for log files
+	if not os.path.isdir(output + "btyper3_final_results/logs"):
+		os.mkdir(output + "btyper3_final_results/logs")
+
+	# save path to final results directory
+	final_results_directory = output + "btyper3_final_results/"
+
+	# initialize log file
+	logging.basicConfig(level = logging.DEBUG, filename = final_results_directory + "logs/" + prefix + ".log", filemode = "a+", format = "%(message)s")
+	logging.getLogger().addHandler(logging.StreamHandler())
+
+
+	# get arguments
+	# evalue is stored as a string because it gets passed to blast command as a string
+	ani_species = args.ani_species
+	ani_subspecies = args.ani_subspecies
+	fastani_path = args.fastani_path
+	virulence = args.virulence
+	bt = args.bt
+	vpthresh = int(args.virulence_identity)
+	vqthresh = int(args.virulence_coverage)
+	bpthresh = int(args.bt_identity)
+	bqthresh = int(args.bt_coverage)
+	overlap = float(args.bt_overlap)
+	evalue = str(args.evalue)
+	
+	# log to file
+	now = datetime.datetime.now()
+	logging.info("Welcome to BTyper3!")
+	logging.info("You are initializing this run at " + now.strftime("%Y-%m-%d %H:%M"))
+	logging.info("You ran the following command: ")
+	logging.info(" ".join([str(sa) for sa in sys.argv]))
+	logging.info("Report bugs/concerns to Laura M. Carroll, laura.carroll@embl.de")
+
+
+	# perform species and/or supspecies assignment
+	if ani_species == "True" or ani_subspecies == "True":
+
+		if ani_species == "True":
+
+			get_species = Ani(
+				taxon = "species",
+				fastani_path = fastani_path,
+				fasta = infile,
+				ani_references = btyper3_path + "seq_ani_db/species/fastani_references_species.txt",
+				final_results_directory = final_results_directory,
+				prefix = prefix)
+
+			logging.info("Using FastANI to assign " + prefix + " to a species at " + now.strftime("%Y-%m-%d %H:%M"))
+
+			final_species = get_species.run_fastani("species", fastani_path, infile, btyper3_path + "seq_ani_db/species/fastani_references_species.txt", final_results_directory, prefix)
+
+			logging.info("Finished species assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+
+		else:
+
+			final_species = "(Species assignment not performed)"
+		
+		if ani_subspecies == "True":
+
+			get_subspecies = Ani(
+				taxon = "subspecies",
+				fastani_path = fastani_path,
+				fasta = infile,
+				ani_references = btyper3_path + "seq_ani_db/subspecies/fastani_references_subspecies.txt",
+				final_results_directory = final_results_directory,
+				prefix = prefix)
+
+			logging.info("Using FastANI to assign " + prefix + " to a subspecies (if applicable) at " + now.strftime("%Y-%m-%d %H:%M"))
+
+			final_subspecies = get_subspecies.run_fastani("subspecies", fastani_path, infile, btyper3_path + "seq_ani_db/subspecies/fastani_references_subspecies.txt", final_results_directory, prefix)
+			logging.info("Finished subspecies assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+
+		else:
+
+			final_subspecies = "(Subspecies assignment not performed)"
+
+
+	else:
+
+		final_species = "(Species assignment not performed)"
+		final_subspecies = "(Subspecies assignment not performed)"
+
+
+
+	# perform virulence-associated biovar assignment
+	if virulence == "True":
+
+		get_virulence = Blast(
+			task = "tblastn",
+			dbseqs = infile,
+			fasta = btyper3_path + "seq_virulence_db/btyper3_virulence_sequences.faa",
+			final_results_directory = final_results_directory,
+			prefix = prefix,
+			suffix = "virulence",
+			pthresh = vpthresh,
+			qthresh = vqthresh,
+			overlap = overlap,
+			evalue = evalue)
+
+		logging.info("Using tblastn to identify potential virulence factors in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+		
+		vir = get_virulence.run_blast("tblastn", infile, btyper3_path + "seq_virulence_db/btyper3_virulence_sequences.faa", final_results_directory, prefix, "virulence", evalue)
+		anthracis, emetic = get_virulence.parse_virulence(vir, vpthresh, vqthresh)
+
+		logging.info("Finished virulence factor detection in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+
+
+	else:
+
+		anthracis = "(Virulence factor detection not performed)"
+		emetic = "(Virulence factor detection not performed)" 
+
+
+	
+	# perform Thuringiensis biovar assignment
+	if bt == "True":
+
+		get_bt = Blast(
+			task = "tblastn",
+			dbseqs = infile,
+			fasta = btyper3_path + "seq_bt_db/btyper3_bt_sequences.faa",
+			final_results_directory = final_results_directory,
+			prefix = prefix,
+			suffix = "bt",
+			pthresh = bpthresh,
+			qthresh = bqthresh,
+			overlap = overlap,
+			evalue = evalue)
+
+		logging.info("Using tblastn to identify potential Bt genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+		
+		bt_results = get_bt.run_blast("tblastn", infile, btyper3_path + "seq_bt_db/btyper3_bt_sequences.faa", final_results_directory, prefix, "bt", evalue)
+		bt_final = get_bt.parse_bt(bt_results, bpthresh, bqthresh, overlap)
+
+		logging.info("Finished Bt toxin gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+
+
+	else:
+
+		bt_final = "(Bt toxin gene detection not performed)"	
+
+			
+
+	# print results to a final results file
+	get_final_results = FinalResults(
+		final_results_directory = final_results_directory,
+		infile = infile,
+		prefix = prefix,
+		species = final_species,
+		subspecies = final_subspecies,
+		anthracis = anthracis,
+		emetic = emetic,
+		bt_final = bt_final)
+
+	get_final_results.print_final_results(final_results_directory, infile, prefix, final_species, final_subspecies, anthracis, emetic, bt_final)
+
+	if os.path.isfile(infile + ".nsq"):
+		cmd = "rm {0}.nsq {0}.nin {0}.nhr".format(infile)
+		os.system(cmd)	
+
+	logging.info("")
+	logging.info("")
+	logging.info("")
+	logging.info("BTyper3 finished at " + now.strftime("%Y-%m-%d %H:%M"))
+	logging.info("Report bugs/concerns to Laura M. Carroll, laura.carroll@embl.de\n")
+	logging.info("Have a nice day!")
+
+
+
+def main():
+
+	# BTyper3 arguments
+
+	parser = argparse.ArgumentParser(usage = "btyper3 -i </path/to/genome.fasta> -o </path/to/output/directory/> [other options]")
+
+	parser.add_argument("-i", "--input", help = "Path to input genome in fasta format", nargs = 1, required = True)
+
+	parser.add_argument("-o", "--output", help = "Path to desired output directory", nargs = 1, required = True)
+
+	parser.add_argument("--ani_species", help = "Optional argument; True or False; assign genome to a species using FastANI; default = True", nargs = "?", default = "True")
+
+	parser.add_argument("--ani_subspecies", help = "Optional argument; True or False; assign genome to a subspecies, if relevant, using FastANI; default = True", nargs = "?", default = "True")
+
+	parser.add_argument("--fastani_path", help = "Optional argument for use with --ani_species True or --ani_subspecies True; fastANI, unless path to fastANI executable is supplied; path to fastANI; default = fastANI <fastANI is in the user's path>", nargs = "?", default = "fastANI")
+ 
+	parser.add_argument("--virulence", help = "Optional argument; True or False; perform virulence gene detection to assign genomes to biovars Anthracis or Emeticus; default = True", nargs = "?", default = "True")
+
+	parser.add_argument("--bt", help = "Optional argument; True or False; perform Bt toxin gene detection for cry, cyt, and vip genes to assign genomes to biovar Thuringiensis; default = True", nargs = "?", default = "True")
+
+	parser.add_argument("--virulence_identity", help = "Optional argument for use with --virulence True; integer from 0 to 100; minimum percent amino acid identity threshold for a virulence gene to be considered present; default = 50", nargs = "?", default = 50)
+
+	parser.add_argument("--virulence_coverage", help = "Optional argument for use with --virulence True; integer from 0 to 100; minimum percent coverage threshold for a virulence gene to be considered present; default = 70", nargs = "?", default = 70)
+
+	parser.add_argument("--bt_identity", help = "Optional argument for use with --bt True; integer from 0 to 100; minimum percent amino acid identity threshold for a Bt toxin gene to be considered present; default = 70", nargs = "?", default = 50)
+
+	parser.add_argument("--bt_coverage", help = "Optional argument for use with --bt True; integer from 0 to 100; minimum percent coverage threshold for a Bt toxin gene to be considered present; default = 70", nargs = "?", default = 70)
+
+	parser.add_argument("--bt_overlap", help = "Optional argument for use with --bt True; float from 0 to 1; specify maximum proportion of overlap for overlapping Bt toxin genes to be considered separate genes; Bt toxin genes below this threshold will be considered separate, while those above it will be considered overlapping, and only the top hit will be reported; default=0.7", nargs = "?", default = 0.7)
+
+	parser.add_argument("--evalue", help = "Optional argument for use with --virulence True and/or --bt True; float >= 0; maximum blast e-value for a hit to be saved; note that if both --virulence True and --bt True, this e-value threshold will be applied to both analyses; default = 1e-5", nargs = "?", default = 1e-5)
+
+	parser.add_argument("--version", action="version", version='%(prog)s 3.0.1', help="Print version")
+
+	args = parser.parse_args()
+
+	run_pipeline(args)
+
+if __name__ == "__main__":
+
+	# run BTyper3
+
+	main()
