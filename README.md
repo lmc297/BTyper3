@@ -231,7 +231,7 @@ Optional arguments are:
                         Optional argument for use with --virulence True;
                         integer from 0 to 100; minimum percent amino acid
                         identity threshold for a virulence gene to be
-                        considered present; default = 70
+                        considered present; default = 50
   --virulence_coverage [VIRULENCE_COVERAGE]
                         Optional argument for use with --virulence True;
                         integer from 0 to 100; minimum percent coverage
@@ -241,7 +241,7 @@ Optional arguments are:
                         Optional argument for use with --bt True; integer from
                         0 to 100; minimum percent amino acid identity
                         threshold for a Bt toxin gene to be considered
-                        present; default = 70
+                        present; default = 50
   --bt_coverage [BT_COVERAGE]
                         Optional argument for use with --bt True; integer from
                         0 to 100; minimum percent coverage threshold for a Bt
