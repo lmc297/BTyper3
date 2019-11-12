@@ -10,7 +10,7 @@ The program, as well as the associated databases, can be downloaded from https:/
 
 Post issues at https://github.com/lmc297/BTyper3/issues
 
-**Note about BLAST+ version 2.10.0:*** BLAST+ version 2.10.0 will not work with BTyper3, as ```makeblastdb``` produces an error. The BTyper3 manual has been updated to reflect this. Homebrew users should note that the current Homebrew formula for BLAST+ downloads BLAST+ version 2.10.0, which is not compatible with BTyper3. 
+**Note about BLAST+ version 2.10.0:** BLAST+ version 2.10.0 will not work with BTyper3, as ```makeblastdb``` produces an error. The BTyper3 manual has been updated to reflect this. Homebrew users should note that the current Homebrew formula for BLAST+ downloads BLAST+ version 2.10.0, which is not compatible with BTyper3. 
 
 ### Citation
 
