@@ -121,12 +121,12 @@ build_btyper3_anib_db.py -db full
 
 For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 87M disk space):
 ```
-build_btyper_anib_db.py -db species-only
+build_btyper3_anib_db.py -db species-only
 ```
 
 For subspecies-only database, which can be used to perform subspecies assignment (but not species assignment; needs about 11M disk space):
 ```
-build_btyper_anib_db.py -db subspecies-only
+build_btyper3_anib_db.py -db subspecies-only
 ```
 
 After running any command, follow the instructions in your terminal.
