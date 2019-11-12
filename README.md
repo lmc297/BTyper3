@@ -91,27 +91,27 @@ To download BLAST+ v. 2.9.0:
 * Add BLAST+ to your path by running the following command from your command line (replace ```~/ncbi-blast-2.9.0+/bin``` with the path to your BLAST+ ```bin``` directory): ```PATH=$PATH:~/ncbi-blast-2.9.0+/bin```
 
 
-6. Follow the instructions to install <a href="https://github.com/ParBLiSS/FastANI">fastANI</a>, if necessary.
+7. Follow the instructions to install <a href="https://github.com/ParBLiSS/FastANI">fastANI</a>, if necessary.
 
-7. Tap brewsci/bio, if necessary, by running the following command from your terminal:
+8. Tap brewsci/bio, if necessary, by running the following command from your terminal:
 
 ```
 brew tap brewsci/bio
 ```
 
-8. Tap BTyper3 by running the following command from your terminal:
+9. Tap BTyper3 by running the following command from your terminal:
   
 ```
 brew tap lmc297/homebrew-btyper3
 ```
 
-9. Install BTyper3 and its dependencies by running the following command from your terminal:
+10. Install BTyper3 and its dependencies by running the following command from your terminal:
   
 ```
 brew install btyper3
 ```
 
-10. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
+11. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
 
 For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 98M disk space):
 
