@@ -113,13 +113,13 @@ brew install btyper3
 
 11. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
 
-For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 98M disk space):
+For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 102M disk space):
 
 ```
 build_btyper3_anib_db.py -db full
 ```
 
-For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 87M disk space):
+For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 91M disk space):
 ```
 build_btyper3_anib_db.py -db species-only
 ```
@@ -174,13 +174,13 @@ Note: In the examples below, BTyper3 commands are shown as ```btyper3 [options..
 
 7. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
 
-For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 98M disk space):
+For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 102M disk space):
 
 ```
 build_btyper3_anib_db.py -db full
 ```
 
-For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 87M disk space):
+For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 91M disk space):
 ```
 build_btyper3_anib_db.py -db species-only
 ```
