@@ -84,7 +84,7 @@ To download BLAST+ v. 2.9.0:
 
 * Click on the file that is appropriate for your operating system to download it; for Mac users, the following tar.gz file should work: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.9.0+-x64-macosx.tar.gz 
 
-* Move the resulting tar.gz file to your home directory (or the directory of your choice) by running the command ```mv ~/ncbi-blast-2.9.0+-x64-macosx.tar.gz ~``` from your command line (replace ```ncbi-blast-2.9.0+-x64-macosx.tar.gz``` with the BLAST+ tar.gz file name you clicked on and/or replace ```~``` with the desired directory in which you want to store your BLAST+ executables)
+* Move the resulting tar.gz file to your home directory (or the directory of your choice) by running the command ```mv ~/Downloads/ncbi-blast-2.9.0+-x64-macosx.tar.gz ~``` from your command line (replace ```ncbi-blast-2.9.0+-x64-macosx.tar.gz``` with the BLAST+ tar.gz file name you clicked on and/or replace ```~``` with the desired directory in which you want to store your BLAST+ executables)
 
 * Extract the tar file by running ```tar -xzf ~/ncbi-blast-2.9.0+-x64-macosx.tar.gz``` from your command line (replace ```ncbi-blast-2.9.0+-x64-macosx.tar.gz``` with the BLAST+ tar.gz file name you clicked on and/or replace ```~``` with the  path to the directory in which your stored the BLAST+ tar.gz file)
 
