@@ -10,6 +10,8 @@ The program, as well as the associated databases, can be downloaded from https:/
 
 Post issues at https://github.com/lmc297/BTyper3/issues
 
+**Note about BLAST+ version 2.10.0:*** BLAST+ version 2.10.0 will not work with BTyper3, as ```makeblastdb``` produces an error. The BTyper3 manual has been updated to reflect this. Homebrew users should note that the current Homebrew formula for BLAST+ downloads BLAST+ version 2.10.0, which is not compatible with BTyper3. 
+
 ### Citation
 
 #### If you found the BTyper3 tool, its source code, and/or any of its associated databases useful, please cite:
@@ -76,6 +78,19 @@ pip3 install pandas
 pip3 install numpy
 ```
 
+6. Download and install <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/">BLAST+ v. 2.9.0</a>, if necessary (note that BLAST+ v. 2.10.0, the version that is now currently downloaded via Homebrew, will not work, as makeblastdb produces an error). 
+
+To download BLAST+ v. 2.9.0:
+
+* Click on the file that is appropriate for your operating system to download it; for Mac users, the following <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.9.0+-x64-macosx.tar.gz">tar.gz file</a> should work
+
+* Move the resulting tar.gz file to your home directory (or the directory of your choice) by running the command ```mv ~/ncbi-blast-2.9.0+-x64-macosx.tar.gz ~``` from your command line (replace ```ncbi-blast-2.9.0+-x64-macosx.tar.gz``` with the BLAST+ tar.gz file name you clicked on and/or replace ```~``` with the desired directory in which you want to store your BLAST+ executables)
+
+* Extract the tar file by running ```tar -xzf ~/ncbi-blast-2.9.0+-x64-macosx.tar.gz``` from your command line (replace ```ncbi-blast-2.9.0+-x64-macosx.tar.gz``` with the BLAST+ tar.gz file name you clicked on and/or replace ```~``` with the  path to the directory in which your stored the BLAST+ tar.gz file)
+
+* Add BLAST+ to your path by running the following command from your command line (replace ```~/ncbi-blast-2.9.0+/bin``` with the path to your BLAST+ ```bin``` directory): ```PATH=$PATH:~/ncbi-blast-2.9.0+/bin```
+
+
 6. Follow the instructions to install <a href="https://github.com/ParBLiSS/FastANI">fastANI</a>, if necessary.
 
 7. Tap brewsci/bio, if necessary, by running the following command from your terminal:
@@ -129,7 +144,7 @@ After running any command, follow the instructions in your terminal.
   
   <a href="https://numpy.org/">NumPy (for python3)</a>
   
-  <a href="https://github.com/Homebrew/homebrew-core/blob/master/Formula/blast.rb">BLAST+ v. 2.9.0 or higher</a>
+  <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/">BLAST+ v. 2.9.0</a> (note that BLAST+v. 2.10.0 will not work, as makeblastdb produces an error)
   
   <a href="https://github.com/ParBLiSS/FastANI">FastANI version 1.0 or higher</a>
   
