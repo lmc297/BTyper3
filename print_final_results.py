@@ -31,7 +31,7 @@ class FinalResults:
 
 	def print_final_results(self, final_results_directory, infile, prefix, species, subspecies, anthracis, emetic, bt_final):
 
-		header = ["#filename", "prefix", "species(ANI)", "subspecies(ANI)", "cereulide(genes)", "anthrax_toxin(genes)", "Bt(genes)", "final_taxon_names"]
+		header = ["#filename", "prefix", "species(ANI)", "subspecies(ANI)", "anthrax_toxin(genes)", "cereulide(genes)", "Bt(genes)", "final_taxon_names"]
 
 		biovars = []
 		if anthracis != "(Virulence factor detection not performed)" and emetic != "(Virulence factor detection not performed)":

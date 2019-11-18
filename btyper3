@@ -237,7 +237,7 @@ def main():
 
 	parser.add_argument("--evalue", help = "Optional argument for use with --virulence True and/or --bt True; float >= 0; maximum blast e-value for a hit to be saved; note that if both --virulence True and --bt True, this e-value threshold will be applied to both analyses; default = 1e-5", nargs = "?", default = 1e-5)
 
-	parser.add_argument("--version", action="version", version='%(prog)s 3.0.1', help="Print version")
+	parser.add_argument("--version", action="version", version='%(prog)s 3.0.2', help="Print version")
 
 	args = parser.parse_args()
 
