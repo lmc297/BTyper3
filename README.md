@@ -78,9 +78,9 @@ pip3 install pandas
 pip3 install numpy
 ```
 
-6. Download and install BLAST+ v. 2.9.0, if necessary (note that BLAST+ v. 2.10.0, the version that is now currently downloaded via Homebrew, will not work, as makeblastdb produces an error): ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/
+6. Download and install BLAST+ v. 2.9.0, if necessary (note that Homebrew currently downloads BLAST+ v. 2.9.0, which is compatible with BTyper3; however, earlier Homebrew formulas downloaded BLAST+ v. 2.10.0, which will not work, as makeblastdb produces an error): ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/
 
-To download BLAST+ v. 2.9.0:
+Currently, Homebrew should download BLAST+ v. 2.9.0, so you can move on to the next step. If this changes in the future, you can download BLAST+ v. 2.9.0 via the following steps:
 
 * Click on the file that is appropriate for your operating system to download it; for Mac users, the following tar.gz file should work: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.9.0+-x64-macosx.tar.gz 
 
