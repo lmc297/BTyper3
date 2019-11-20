@@ -311,11 +311,11 @@ The *B. cereus* group genomospecies producing the highest average nucleotide ide
 * **Column 4: subspecies(ANI)**
 Assigned *B. cereus* group subspecies, with the corresponding ANI value in parentheses, if applicable. If the input genome does not meet any subspecies thresholds, a subspecies designation of "No subspecies" is given. If subspecies assignment is not performed (```--ani_subspecies False```), a designation of "(Subspecies assignment not performed)" is given.
 
-* **Column 5: cereulide(genes)**
-Number of cereulide synthetase-encoding genes detected in the input genome, out of the total number of cereulide synthetase genes required for a genome to be assigned to biovar Emeticus. Cereulide synthetase genes detected in the input genome are listed in parentheses.
-
-* **Column 6: anthrax_toxin(genes)**
+* **Column 5: anthrax_toxin(genes)**
 Number of anthrax toxin-encoding genes detected in the input genome, out of the total number of anthrax toxin genes required for a genome to be assigned to biovar Anthracis. Anthrax toxin genes detected in the input genome are listed in parentheses.
+
+* **Column 6: cereulide(genes)**
+Number of cereulide synthetase-encoding genes detected in the input genome, out of the total number of cereulide synthetase genes required for a genome to be assigned to biovar Emeticus. Cereulide synthetase genes detected in the input genome are listed in parentheses.
 
 * **Column 7: Bt(genes)**
 Total number of *Bacillus thuringiensis* toxin (Bt toxin) genes detected in the input genome. Bt toxin genes detected in the input genome are listed in parentheses. **Note: BTyper3 currently detects known Bt toxin genes (i.e., those present in the <a href="http://www.btnomenclature.info/">Bt toxin nomenclature database</a>; accessed September 19, 2019)  using translated nucleotide blast (tblastn). This approach is conservative to reflect the analyses conducted in the manuscript (i.e., to limit false positives).**
