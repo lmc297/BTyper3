@@ -10,7 +10,7 @@ The program, as well as the associated databases, can be downloaded from https:/
 
 Post issues at https://github.com/lmc297/BTyper3/issues
 
-**Note about BLAST+ version 2.10.0:** BLAST+ version 2.10.0 will not work with BTyper3, as ```makeblastdb``` produces an error. The BTyper3 manual has been updated to reflect this. Homebrew users should note that the current Homebrew formula for BLAST+ downloads BLAST+ version 2.10.0, which is not compatible with BTyper3. 
+**Note about BLAST+ version 2.10.0:** BLAST+ version 2.10.0 will not work with BTyper3, as ```makeblastdb``` produces an error. The BTyper3 manual has been updated to reflect this. Homebrew users should note that a previous Homebrew formula for BLAST+ downloads BLAST+ version 2.10.0, which is not compatible with BTyper3. 
 
 ### Citation
 
@@ -78,7 +78,7 @@ pip3 install pandas
 pip3 install numpy
 ```
 
-6. Download and install BLAST+ v. 2.9.0, if necessary (note that Homebrew currently downloads BLAST+ v. 2.9.0, which is compatible with BTyper3; however, earlier Homebrew formulas downloaded BLAST+ v. 2.10.0, which will not work, as makeblastdb produces an error): ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/
+6. Download and install BLAST+ v. 2.9.0, if necessary (note that Homebrew currently downloads BLAST+ v. 2.9.0, which is compatible with BTyper3; however, earlier Homebrew formulas downloaded BLAST+ v. 2.10.0, which will not work): ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/
 
 Currently, Homebrew should download BLAST+ v. 2.9.0, so you can move on to the next step. If this changes in the future, you can download BLAST+ v. 2.9.0 via the following steps:
 
@@ -146,7 +146,7 @@ After running any command, follow the instructions in your terminal.
   
   <a href="https://numpy.org/">NumPy (for python3)</a>
   
-  BLAST+ v. 2.9.0 (note that BLAST+v. 2.10.0 will not work, as makeblastdb produces an error): <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/">
+  BLAST+ v. 2.9.0 (note that BLAST+v. 2.10.0 will not work): <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/">
   
   <a href="https://github.com/ParBLiSS/FastANI">FastANI version 1.0 or higher</a>
   
