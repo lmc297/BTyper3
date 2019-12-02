@@ -18,6 +18,16 @@ Post issues at https://github.com/lmc297/BTyper3/issues
   
 Carroll, Laura M., Martin Wiedmann, Jasna Kovac. 2019. "Proposal of a taxonomic nomenclature for the *Bacillus cereus* group which reconciles genomic definitions of bacterial species with clinical and industrial phenotypes." *bioRxiv* 779199; doi: https://doi.org/10.1101/779199.
 
+#### If you used BTyper3 to perform species and/or subspecies assignment, please additionally cite:
+
+Chirag, Jain, Luis M. Rodriguez-R, Adam M. Phillippy, Konstantinos T. Konstantinidis, Srinivas Aluru. 2018. High throughput ANI analysis of 90K prokaryotic genomes reveals clear species boundaries. *Nature Communications* 9(1):5114. doi: 10.1038/s41467-018-07641-9.
+
+#### If you used BTyper3 to perform biovar assignment and/or to identify virulence factors and/or to identify Bt toxin-encoding genes, please additionally cite:
+
+Camacho, Christiam, George Coulouris, Vahram Avagyan, Ning Ma, Jason Papadopoulos, Kevin Bealer, Thomas L Madden. 2009. BLAST+: architecture and applications. *BMC Bioinformatics* 10:421. doi: 10.1186/1471-2105-10-421.
+
+Cock, Peter J. A., Tiago Antao, Jeffrey T. Chang, Brad A. Chapman, Cymon J. Cox, Andrew Dalke, Iddo Friedberg, Thomas Hamelryck, Frank Kauff, Bartek Wilczynski, Michiel J. L. de Hoon. 2009. Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 25(11): 1422–1423. doi: 10.1093/bioinformatics/btp163.
+
 
 ------------------------------------------------------------------------
   
@@ -458,7 +468,7 @@ Camacho, Christiam, et al. BLAST+: architecture and applications. *BMC Bioinform
 
 Cock, Peter J., et al. Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 2009 June 1; 25(11): 1422-1423.
 
-Jain, Chirag, et al. High-throughput ANI Analysis of 90K Prokaryotic Genomes Reveals Clear Species Boundaries. bioRxiv 225342; doi: https://doi.org/10.1101/225342.
+Jain, Chirag, et al. High-throughput ANI Analysis of 90K Prokaryotic Genomes Reveals Clear Species Boundaries. *Nature Communications* 9(1):5114. doi: 10.1038/s41467-018-07641-9.
 
 #### Tutorial Genomes
 
