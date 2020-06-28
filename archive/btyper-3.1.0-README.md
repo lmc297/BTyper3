@@ -203,7 +203,7 @@ After running any command, follow the instructions in your terminal.
   
   <a href="https://numpy.org/">NumPy (for python3)</a>
   
-  <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/">BLAST v. 2.9.0+ and up</a>
+  BLAST v. 2.9.0+ and up (ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/)
   
   <a href="https://github.com/ParBLiSS/FastANI">FastANI version 1.0 and up</a>
   
