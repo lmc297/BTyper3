@@ -442,7 +442,7 @@ Number of *"B. cereus"* exo-polysaccharide capsule (Bps)-encoding genes detected
 * **Column 15: Bt(genes)**
 Total number of *Bacillus thuringiensis* toxin (Bt toxin) genes detected in the input genome. Bt toxin genes detected in the input genome are listed in parentheses. **Note: BTyper3 currently detects known Bt toxin genes (i.e., those present in the <a href="http://www.btnomenclature.info/">Bt toxin nomenclature database</a>; accessed September 19, 2019)  using translated nucleotide blast (tblastn). This approach is conservative to reflect the analyses conducted in the manuscript (i.e., to limit false positives).**
 
-* **Column 16: PubMLST_ST[clonal_complex](perfect_matches)**
+* **Column 16: PubMLST_ST\[clonal_complex](perfect_matches)**
 Sequence type (ST) assigned using PubMLST's seven-gene multi-locus sequence typing (MLST) scheme for *B. cereus s.l.* Square brackets contain the name of the PubMLST clonal complex associated with the ST, if available/applicable. Parentheses contain the number of perfect allele matches (i.e., with 100% nucleotide identity and coverage) out of seven possible.
 
 * **Column 17: Adjusted_panC_Group(predicted_species)**
