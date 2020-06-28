@@ -395,7 +395,7 @@ A single BTyper3 run will deposit the following in your specified output directo
   
 ```btyper3_final_results``` (*directory*): Final results directory in which BTyper3 deposits all of its output files. BTyper3 creates this directory in your specified output directory (```--output```) 
 
-```your_genome_final_results.txt``` (*file*): Final tab-separated text file, 1 per input genome. BTyper3 creates this file, which has a header (denoted with "#"), followed by a single row containing results for the input genome, where where columns contain the following:
+```your_genome_final_results.txt``` (*file*): Final tab-separated text file, 1 per input genome. BTyper3 creates this file, which has a header (denoted with "#"), followed by a single row containing results for the input genome, where columns contain the following:
 
 * **Column 1: #filename**
 The path to the fasta file supplied as input.
