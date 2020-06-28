@@ -10,7 +10,7 @@ class Ani:
 	run_fastani
 	purpose: runs fastANI for species/subspecies assignment and selects match with highest ANI
 	input:
-		taxon = "species" or "subspecies"; corresponds to directory of genomes to use
+		taxon = "species", "subspecies", or "geneflow"; corresponds to directory of genomes to use
 		fastani_path = path to fastANI executable
 		fasta = query genome for fastANI
 		ani_references = list of reference genomes for fastANI
@@ -36,6 +36,8 @@ class Ani:
 			ani_results_dir = final_results_directory + "species"
 		elif taxon == "subspecies":
 			ani_results_dir = final_results_directory + "subspecies"
+		elif taxon == "geneflow":
+			ani_results_dir = final_results_directory + "geneflow"
 		if not os.path.isdir(ani_results_dir):
 			os.mkdir(ani_results_dir)
 
@@ -67,6 +69,30 @@ class Ani:
 					final_subspecies = "No subspecies"
 				return(final_subspecies)
 
+			elif taxon == "geneflow":
+				psub = maxtax.split("_")[1].strip()
+				minani = maxtax.split("_")[3].strip()
+				minani = float(minani.split("-")[0].strip())
+				# if the ANI value doesn't fall within the pseudo-gene flow unit ANI boundary
+				if maxani < minani:
+					# try the 2nd, 3rd, 4th, and 5th most similar genomes
+					found_alternate = 0
+					test_top5 = [1, 2, 3, 4]
+					for tt in test_top5:
+						testtax = ani_results_file.iloc[tt,1]	
+						testtax = testtax.split("/")[-1].strip()
+						testani = ani_results_file.iloc[tt,2]
+						test_minani = testtax.split("_")[3].strip()
+						test_minani = float(test_minani.split("-")[0].strip())
+						if testani >= test_minani:
+							psub = testtax.split("_")[1].strip()
+							found_alternate = 1
+					if found_alternate == 0:
+						psub = psub + "*"
+
+				final_geneflow = psub + "(" + str(maxani) + ")"
+				return(final_geneflow)
+
 		except EmptyDataError:
 			if taxon == "species":
 				final_species = "(Species unknown)"
@@ -74,5 +100,8 @@ class Ani:
 			elif taxon == "subspecies":
 				final_subspecies = "No subspecies"
 				return(final_subspecies)
+			elif taxon == "geneflow":
+				final_geneflow = "(Pseudo-gene flow unit unknown)"
+				return(final_geneflow)
 
 

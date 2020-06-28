@@ -45,6 +45,14 @@ class Blast:
 			Bt toxin genes below this threshold will be considered separate, while those above it will be considered overlapping, and only the top hit will be reported
 	output:
 		a sorted list of Bt genes detected in a sequence
+
+	parse_mlst
+	purpose:
+		assign query genome to sequence type (ST), using multi-locus sequence typing (MLST) and blast results from run_blast
+	input:
+		mlstfile = path to blast results file containing MLST gene hits
+	output:
+		list of top hits for each allele
 	"""
 
 	def __init__(self, task, dbseqs, fasta, final_results_directory, prefix, suffix, pthresh, qthresh, overlap, evalue):
@@ -84,9 +92,17 @@ class Blast:
 
 			emetic = []
 			anthracis = []
+			nhe = []
+			hbl = []
+			cytK = []
+			sph = []
+			cap = []
+			has = []
+			bps = []
+			max_cyt = 0
 			genes = genes.unique()
 			for gene in genes:
-				gene_subset = blast_results_file[blast_results_file[0].str.contains(gene)] # genome as query and mlst db as db
+				gene_subset = blast_results_file[blast_results_file[0].str.match(gene)] # genome as query and mlst db as db
 				gene_subset = gene_subset.sort_values(by = [11], ascending = False)
 				max_gene = gene_subset.iloc[0,0]
 				pid = float(gene_subset.iloc[0,2])
@@ -97,13 +113,38 @@ class Blast:
 						emetic.append(max_gene)
 					if max_gene == "cya" or max_gene == "lef" or max_gene == "pagA":
 						anthracis.append(max_gene)
+					if max_gene == "nheA" or max_gene == "nheB" or max_gene == "nheC":
+						nhe.append(max_gene)
+					if max_gene == "hblA" or max_gene == "hblB" or max_gene == "hblC" or max_gene == "hblD":
+						hbl.append(max_gene)
+					if max_gene == "cytK-1" or max_gene == "cytK-2":
+						cyt_bits = gene_subset.iloc[0,11]
+						if cyt_bits > max_cyt:
+							max_cyt = cyt_bits
+							cytK = []
+							cytK.append(max_gene)
+					if max_gene == "sph":
+						sph.append(max_gene)
+					if max_gene == "capA" or max_gene == "capB" or max_gene == "capC" or max_gene == "capD" or max_gene == "capE":
+						cap.append(max_gene)
+					if max_gene == "hasA" or max_gene == "hasB" or max_gene == "hasC":
+						has.append(max_gene)
+					if max_gene == "bpsA" or max_gene == "bpsB" or max_gene == "bpsC" or max_gene == "bpsD" or max_gene == "bpsE" or max_gene == "bpsF" or max_gene == "bpsG" or max_gene == "bpsH" or max_gene == "bpsX":
+						bps.append(max_gene)
 
 		except EmptyDataError:
 
 			anthracis = []
-			emetic = []	
+			emetic = []
+			nhe = []
+			hbl = []
+			cytK = []
+			sph = []
+			cap = []
+			has = []
+			bps = []	
 
-		return(anthracis, emetic)				
+		return(anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps)				
 
 
 	
@@ -119,7 +160,7 @@ class Blast:
 			bitdict = {}
 			genes = genes.unique()
 			for gene in genes:
-				gene_subset = blast_results_file[blast_results_file[0].str.contains(gene)] # genome as query and mlst db as db
+				gene_subset = blast_results_file[blast_results_file[0].str.match(gene)] # genome as query and mlst db as db
 				gene_subset = gene_subset.sort_values(by = [11], ascending = False)
 				max_gene = gene_subset.iloc[0,0]
 				pid = float(gene_subset.iloc[0,2])
@@ -175,4 +216,61 @@ class Blast:
 
 		except EmptyDataError:
 			bt = []	
-		return(sorted(bt))				
+		return(sorted(bt))			
+
+
+	def parse_mlst(self, mlstfile):
+
+		try:
+			
+			blast_results_file = pd.read_csv(mlstfile, sep = "\s+", header = None)
+			blast_results_file = blast_results_file.sort_values(by = [0], ascending = True) # genome as query and mlst db as db
+			genes = blast_results_file.iloc[:,0] # genome as db and mlst db as query
+
+			mlst = []
+			perfect_matches = 0		
+
+			genes = genes.str.split("_",expand=True) 
+			genes = genes.iloc[:,0]
+			genes = genes.unique()
+			for gene in genes:
+				gene_subset = blast_results_file[blast_results_file[0].str.contains(gene)] # genome as query and mlst db as db
+				gene_subset = gene_subset.sort_values(by = [11], ascending = False)
+				max_bits = gene_subset.iloc[0,11]
+				pid = float(gene_subset.iloc[0,2])
+				qid = float(gene_subset.iloc[0,14])
+				if pid == 100.0 and qid == 100.0:
+					perfect_matches += 1
+				max_genes = gene_subset[gene_subset[11]==max_bits]
+				max_genes = max_genes.iloc[:,0]	
+				mlst.append([mg.split("_")[-1].strip() for mg in set(max_genes)])
+
+		except EmptyDataError:
+			mlst = []
+			perfect_matches = 0
+
+		return(mlst, perfect_matches)
+
+
+
+	
+	def parse_panC(self, panCfile):
+
+		try:
+			
+			blast_results_file = pd.read_csv(panCfile, sep = "\s+", header = None)
+			blast_results_file = blast_results_file.sort_values(by = [11], ascending = False)
+			max_bits = blast_results_file.iloc[0,11]
+			pid = float(blast_results_file.iloc[0,2])
+			qid = float(blast_results_file.iloc[0,14])
+			max_gene = blast_results_file.iloc[0,0]
+			print(pid)
+			print(qid)
+			if pid < 99.0 or qid < 80.0:
+					max_gene = max_gene + "*"
+
+
+		except EmptyDataError:
+			max_gene = "Unknown(missing allele)"
+
+		return(max_gene)

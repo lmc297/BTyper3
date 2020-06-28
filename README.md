@@ -10,15 +10,13 @@ The program, as well as the associated databases, can be downloaded from https:/
 
 Post issues at https://github.com/lmc297/BTyper3/issues
 
-**Note about BLAST+ version 2.10.0:** BLAST+ version 2.10.0 will not work with BTyper3, as ```makeblastdb``` produces an error. The BTyper3 manual has been updated to reflect this. Homebrew users should note that a previous Homebrew formula for BLAST+ downloads BLAST+ version 2.10.0, which is not compatible with BTyper3. 
-
 ### Citation
 
 #### If you found the BTyper3 tool, its source code, and/or any of its associated databases useful, please cite:
   
 Carroll, Laura M., Martin Wiedmann, Jasna Kovac. 2020. "Proposal of a Taxonomic Nomenclature for the *Bacillus cereus* Group Which Reconciles Genomic Definitions of Bacterial Species with Clinical and Industrial Phenotypes." *mBio* 11(1): e00034-20; DOI: 10.1128/mBio.00034-20.
 
-#### If you used BTyper3 to perform species and/or subspecies assignment, please additionally cite:
+#### If you used BTyper3 to perform species and/or subspecies and/or pseudo-gene flow unit assignment, please additionally cite:
 
 Jain, Chirag, Luis M. Rodriguez-R, Adam M. Phillippy, Konstantinos T. Konstantinidis, Srinivas Aluru. 2018. High throughput ANI analysis of 90K prokaryotic genomes reveals clear species boundaries. *Nature Communications* 9(1):5114. doi: 10.1038/s41467-018-07641-9.
 
@@ -28,13 +26,23 @@ Camacho, Christiam, George Coulouris, Vahram Avagyan, Ning Ma, Jason Papadopoulo
 
 Cock, Peter J. A., Tiago Antao, Jeffrey T. Chang, Brad A. Chapman, Cymon J. Cox, Andrew Dalke, Iddo Friedberg, Thomas Hamelryck, Frank Kauff, Bartek Wilczynski, Michiel J. L. de Hoon. 2009. Biopython: freely available Python tools for computational molecular biology and bioinformatics. *Bioinformatics* 25(11): 1422–1423. doi: 10.1093/bioinformatics/btp163.
 
+#### If you used BTyper3 to perform seven-gene MLST, please additionally cite:
+
+Jolley, Keith A., James E. Bray, Martin C.J. Maiden. 2018. Open-access bacterial population genomics: BIGSdb software, the PubMLST.org website and their applications. *Wellcome Open Research* 3: 124. doi: doi:10.12688/wellcomeopenres.14826.1
+
+#### If you used BTyper3 to perform *panC* group assignment, please additionally cite:
+
+Guinebretière, Marie-Hélène, Fabiano L. Thompson, Alexei Sorokin, Philippe Normand, Peter Dawyndt, Monika Ehling-Schulz, Birgitta Svensson, Vincent Sanchis, Christophe Nguyen-The, Marc Heyndrickx, Paul De Vos. 2008. Ecological Diversification in the *Bacillus Cereus* Group. *Environmental Microbiology* 10(4): 851-65. doi: 10.1111/j.1462-2920.2007.01495.x.
+
+Guinebretière, Marie-Hélène, Philippe Velge, Olivier Couvert, Frédéric Carlin, Marie-Laure Debuyser, Christophe Nguyen-The. 2010. Ability of *Bacillus cereus* Group Strains To Cause Food Poisoning Varies According to Phylogenetic Affiliation (Groups I to VII) Rather than Species Affiliation. *Journal of Clinical Microbiology* 48(9): 3388–3391. doi: 10.1128/JCM.00921-10.
+
 
 ------------------------------------------------------------------------
   
   
 ## Quick Start
   
-#### Command structure:
+### Command Structure
   
 ```
 btyper3 -i [fasta] -o [output directory] [options...]
@@ -43,6 +51,44 @@ btyper3 -i [fasta] -o [output directory] [options...]
 For help, type `btyper3 -h` or `btyper3 --help`
 
 For your current version, type `btyper3 --version`
+
+### Sample Commands
+
+#### Perform all default analyses, using an assembled genome (complete or draft) in (multi-)FASTA format as input (assumes fastANI is in the user's path):
+
+```
+btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory
+```
+
+#### Perform all default analyses, using an assembled genome (complete or draft) in (multi-)FASTA format as input (fastANI is not in the user's path):
+
+```
+btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --fastani_path /path/to/FastANI_executable/fastANI
+```
+
+#### Perform all default analyses, plus pseudo-gene flow unit assignment, using an assembled genome (complete or draft) in (multi-)FASTA format as input (assumes fastANI is in the user's path):
+
+```
+btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --ani_geneflow True
+```
+
+#### Perform seven-gene MLST only, using user-supplied MLST gene sequences and the latest version of the PubMLST *B. cereus s.l.* database (sequences can be in multi-FASTA format, or concatenated into a single sequence in FASTA format):
+
+```
+btyper3 -i /path/to/mlst.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --virulence False --bt False --panC False --download_mlst_latest True
+```
+
+#### Perform *panC* group assignment only, using a user-supplied *panC* gene sequence in FASTA format:
+
+```
+btyper3 -i /path/to/panC.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --virulence False --bt False --mlst False
+```
+
+#### Perform virulence factor and Bt toxin-encoding gene detection in a plasmid sequence in FASTA format:
+
+```
+btyper3 -i /path/to/plasmid.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --mlst False --panC False
+```
 
 
 ------------------------------------------------------------------------
@@ -82,26 +128,19 @@ pip3 install --user biopython
 pip3 install pandas
 ```
 
-5. Install numpy, if necessary, bu running the following command from your terminal:
+5. Install numpy, if necessary, by running the following command from your terminal:
 
 ```
 pip3 install numpy
 ```
 
-6. Download and install BLAST+ v. 2.9.0, if necessary (note that Homebrew currently downloads BLAST+ v. 2.9.0, which is compatible with BTyper3; however, earlier Homebrew formulas downloaded BLAST+ v. 2.10.0, which will not work): ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/
+6. Install BLAST, if necessary, by running the following command from your terminal (you can alternatively install BLAST from <a href="https://anaconda.org/bioconda/blast">bioconda</a> or <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/">from NCBI</a>):
 
-Currently, Homebrew should download BLAST+ v. 2.9.0, so you can move on to the next step. If this changes in the future, you can download BLAST+ v. 2.9.0 via the following steps:
+```
+brew install blast
+```
 
-* Click on the file that is appropriate for your operating system to download it; for Mac users, the following tar.gz file should work: ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.9.0+-x64-macosx.tar.gz 
-
-* Move the resulting tar.gz file to your home directory (or the directory of your choice) by running the command ```mv ~/Downloads/ncbi-blast-2.9.0+-x64-macosx.tar.gz ~``` from your terminal (replace ```ncbi-blast-2.9.0+-x64-macosx.tar.gz``` with the BLAST+ tar.gz file name you clicked on and/or replace ```~``` with the desired directory in which you want to store your BLAST+ executables)
-
-* Navigate to your home directory by running the following command from your terminal (or, the directory in which you stored your BLAST+ tar.gz file, by replacing ```~``` with the directory path): ```cd ~```
-
-* Extract the tar file by running ```tar -xzf ~/ncbi-blast-2.9.0+-x64-macosx.tar.gz``` from your terminal (replace ```ncbi-blast-2.9.0+-x64-macosx.tar.gz``` with the BLAST+ tar.gz file name you clicked on and/or replace ```~``` with the  path to the directory in which your stored the BLAST+ tar.gz file)
-
-* Add BLAST+ to your path by running the following command from your terminal (replace ```~/ncbi-blast-2.9.0+/bin``` with the path to your BLAST+ ```bin``` directory): ```PATH=$PATH:~/ncbi-blast-2.9.0+/bin```
-
+<a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Additionally, make sure BLAST+ is in your path</a>, if necessary (to check if BLAST+ is in your path, try running ```makeblastdb -h``` and ```tblastn -h``` from your command line; you should get a help message for each command, with no error messages)
 
 7. Follow the instructions to install <a href="https://github.com/ParBLiSS/FastANI">fastANI</a>, if necessary.
 
@@ -123,25 +162,33 @@ brew tap lmc297/homebrew-btyper3
 brew install btyper3
 ```
 
-11. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
+11. Download the "species-only", "subspecies-only", "full" (i.e., both "species-only" and "subspecies-only"), or "geneflow-only" database(s) by running one or more of the following commands from your terminal; note that users who want to perform all ANI-based assignment methods implemented in BTyper3 (i.e., species, subspecies, and pseudo-gene flow unit assignment) should download both the "full" and "geneflow-only" databases (i.e., run both command "A" and command "D" below):
 
-For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 102M disk space):
+A. For the full database, which can be used to perform both species and subspecies assignment, but not pseudo-gene flow unit assignment (needs about 102M disk space):
 
 ```
 build_btyper3_anib_db.py -db full
 ```
 
-For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 91M disk space):
+B. For species-only database, which can be used to perform species assignment (but not subspecies or pseudo-gene flow unit assignment; needs about 91M disk space):
 ```
 build_btyper3_anib_db.py -db species-only
 ```
 
-For subspecies-only database, which can be used to perform subspecies assignment (but not species assignment; needs about 11M disk space):
+C. For subspecies-only database, which can be used to perform subspecies assignment (but not species or pseudo-gene flow unit assignment; needs about 11M disk space):
 ```
 build_btyper3_anib_db.py -db subspecies-only
 ```
 
+D. For geneflow-only database, which can be used to perform pseudo-gene flow unit assignment (but not species or subspecies assignment; needs about 198M disk space):
+
+```
+build_btyper3_anib_db.py -db geneflow-only
+```
+
 After running any command, follow the instructions in your terminal.
+
+12. **If you want to use BTyper3 to perform seven-gene MLST (performed by default):** if this is your first time running your newly installed BTyper3, make sure to add `--download_mlst_latest True` to your command. This will download the latest version of the *B. cereus s.l.* MLST database from <a href="https://pubmlst.org/bigsdb?db=pubmlst_bcereus_seqdef">PubMLST</a>. In subsequent runs, you can set `--download_mlst_latest False` to use this version of the database that is now available on your computer, or set `--download_mlst_latest True` to download the most recent database available on PubMLST.
 
 
 ### Download and run BTyper3 using source file (macOS and Ubuntu)
@@ -150,28 +197,28 @@ After running any command, follow the instructions in your terminal.
   
   <a href="https://www.python.org/downloads/">python3</a>
   
-  <a href="https://biopython.org/wiki/Download">Biopython v. 1.7.4 (for python3)</a>
+  <a href="https://biopython.org/wiki/Download">Biopython v. 1.7.4 and up (for python3)</a>
   
   <a href="https://pandas.pydata.org/pandas-docs/stable/install.html">Pandas (for python3)</a>
   
   <a href="https://numpy.org/">NumPy (for python3)</a>
   
-  BLAST+ v. 2.9.0 (note that BLAST+v. 2.10.0 will not work): <a href="ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/">
+  BLAST v. 2.9.0+ and up (ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/)
   
-  <a href="https://github.com/ParBLiSS/FastANI">FastANI version 1.0 or higher</a>
+  <a href="https://github.com/ParBLiSS/FastANI">FastANI version 1.0 and up</a>
   
 2. <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add BLAST+ to your path</a>, if necessary (to check if BLAST+ is in your path, try running ```makeblastdb -h``` and ```tblastn -h``` from your command line; you should get a help message for each command, with no error messages)
 
-3. Optional: <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add fastANI to your path</a>, if necessary (to check if fastANI is in your path, try running ```fastANI -h``` from your command line; you should get a help message, with no error messages). Note that this step is optional; if you want to perform species and/or subspecies assignment using BTyper3, you can just use the ```--fastani_path``` argument and supply the path to the fastANI executable (```--fastani_path /path/to/fastANI```)
+3. Optional: <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add fastANI to your path</a>, if necessary (to check if fastANI is in your path, try running ```fastANI -h``` from your command line; you should get a help message, with no error messages). Note that this step is optional; if you want to perform species and/or subspecies and/or pseudo-gene flow unit assignment using BTyper3, you can just use the ```--fastani_path``` argument and supply the path to the fastANI executable (```--fastani_path /path/to/fastANI```)
     
 4. Download the BTyper3 source file, and store it in your directory of choice:
 
-https://github.com/lmc297/BTyper3/blob/master/archive/btyper-3.0.1.tar.gz
+https://github.com/lmc297/BTyper3/blob/master/archive/btyper-3.1.0.tar.gz
 
 5. Extract BTyper3 program/databases
 
 ```
-tar -xzvf btyper-3.0.1.tar.gz
+tar -xzvf btyper-3.1.0.tar.gz
 ```
 
 Note: to ensure that BTyper3 works correctly, make sure database directories (beginning with "seq_") remain in the same directory as the BTyper3 executable (stored as "btyper3").
@@ -184,25 +231,33 @@ python3 /path/to/executable/btyper3 [options...]
 
 Note: In the examples below, BTyper3 commands are shown as ```btyper3 [options...]```. If you are calling BTyper3 from the source file (i.e. you didn't install BTyper3 using Homebrew), keep in mind that you may have to call python3 and supply the path to btyper3 to execute the program or related scripts: ```python3 btyper3 [options...]```.
 
-7. Download the "species-only", "subspecies-only", or "full" (i.e., both "species-only" and "subspecies-only") database by running one of the following commands from your terminal:
+7. Download the "species-only", "subspecies-only", "full" (i.e., both "species-only" and "subspecies-only"), or "geneflow-only" database(s) by running one or more of the following commands from your terminal; note that users who want to perform all ANI-based assignment methods implemented in BTyper3 (i.e., species, subspecies, and pseudo-gene flow unit assignment) should download both the "full" and "geneflow-only" databases (i.e., run both command "A" and command "D" below):
 
-For the full database, which can be used to perform both species and subspecies assignment (recommended; needs about 102M disk space):
+A. For the full database, which can be used to perform both species and subspecies assignment, but not pseudo-gene flow unit assignment (needs about 102M disk space):
 
 ```
 build_btyper3_anib_db.py -db full
 ```
 
-For species-only database, which can be used to perform species assignment (but not subspecies assignment; needs about 91M disk space):
+B. For species-only database, which can be used to perform species assignment (but not subspecies or pseudo-gene flow unit assignment; needs about 91M disk space):
 ```
 build_btyper3_anib_db.py -db species-only
 ```
 
-For subspecies-only database, which can be used to perform subspecies assignment (but not species assignment; needs about 11M disk space):
+C. For subspecies-only database, which can be used to perform subspecies assignment (but not species or pseudo-gene flow unit assignment; needs about 11M disk space):
 ```
 build_btyper3_anib_db.py -db subspecies-only
 ```
 
+D. For geneflow-only database, which can be used to perform pseudo-gene flow unit assignment (but not species or subspecies assignment; needs about 198M disk space):
+
+```
+build_btyper3_anib_db.py -db geneflow-only
+```
+
 After running any command, follow the instructions in your terminal.
+
+8. **If you want to use BTyper3 to perform seven-gene MLST (performed by default):** if this is your first time running your newly installed BTyper3, make sure to add `--download_mlst_latest True` to your command. This will download the latest version of the *B. cereus s.l.* MLST database from <a href="https://pubmlst.org/bigsdb?db=pubmlst_bcereus_seqdef">PubMLST</a>. In subsequent runs, you can set `--download_mlst_latest False` to use this version of the database that is now available on your computer, or set `--download_mlst_latest True` to download the most recent database available on PubMLST.
 
 Note: In the examples below, BTyper3 commands are shown as ```btyper3 [options...]```. If you are calling BTyper3 from the source file (i.e. you didn't install BTyper3 using Homebrew), keep in mind that you may have to call python3 and supply the path to btyper3 to execute the program or related scripts: ```python3 btyper3 [options...]```.
 
@@ -242,28 +297,52 @@ Optional arguments are:
   --ani_subspecies [ANI_SUBSPECIES]
                         Optional argument; True or False; assign genome to a
                         subspecies, if relevant, using FastANI; default = True
+  --ani_geneflow [ANI_GENEFLOW]
+                        Optional argument; True or False; assign genome to a
+                        pseudo-gene flow unit using the method described by
+                        Carroll, et al. using FastANI; default = False
   --fastani_path [FASTANI_PATH]
-                        Optional argument for use with --ani_species True or
-                        --ani_subspecies True; fastANI, unless path to fastANI
-                        executable is supplied; path to fastANI; default =
-                        fastANI <fastANI is in the user's path>
+                        Optional argument for use with --ani_species True
+                        and/or --ani_subspecies True and/or --ani_geneflow
+                        True; fastANI, unless path to fastANI executable is
+                        supplied; path to fastANI; default = fastANI <fastANI
+                        is in the user's path>
   --virulence [VIRULENCE]
                         Optional argument; True or False; perform virulence
-                        gene detection to assign genomes to biovars Anthracis
-                        or Emeticus; default = True
+                        gene detection (required if one wants to assign
+                        genomes to biovars Anthracis or Emeticus); default =
+                        True
   --bt [BT]             Optional argument; True or False; perform Bt toxin
-                        gene detection for cry, cyt, and vip genes to assign
-                        genomes to biovar Thuringiensis; default = True
+                        gene detection for cry, cyt, and vip genes (required
+                        if one wants to assign genomes to biovar
+                        Thuringiensis); default = True
+  --mlst [MLST]         Optional argument; True or False; assign genome to a
+                        sequence type (ST) using the seven-gene multi-locus
+                        sequence typing (MLST) scheme available in PubMLST;
+                        default = True
+  --panC [PANC]         Optional argument; True or False; assign genome to a
+                        phylogenetic group (Group I-VIII) using an adjusted,
+                        eight-group panC group assignment scheme; default =
+                        True
+  --virulence_db [VIRULENCE_DB]
+                        Optional argument for use with --virulence True; aa or
+                        nuc; database to use for virulence factor detection:
+                        aa for the amino acid sequence database, or nuc for
+                        the nucleotide sequence database; option aa uses
+                        translated nucleotide blast and allows for the
+                        detection of more remote homologs, but is slower than
+                        nuc, which uses blastn; default = aa
   --virulence_identity [VIRULENCE_IDENTITY]
                         Optional argument for use with --virulence True;
-                        integer from 0 to 100; minimum percent amino acid
-                        identity threshold for a virulence gene to be
-                        considered present; default = 50
+                        integer from 0 to 100; minimum percent amino
+                        acid/nucleotide identity threshold for a virulence
+                        gene to be considered present, depending on choice of
+                        --virulence_db aa or nuc, respectively; default = 70
   --virulence_coverage [VIRULENCE_COVERAGE]
                         Optional argument for use with --virulence True;
                         integer from 0 to 100; minimum percent coverage
                         threshold for a virulence gene to be considered
-                        present; default = 70
+                        present; default = 80
   --bt_identity [BT_IDENTITY]
                         Optional argument for use with --bt True; integer from
                         0 to 100; minimum percent amino acid identity
@@ -286,6 +365,13 @@ Optional arguments are:
                         to be saved; note that if both --virulence True and
                         --bt True, this e-value threshold will be applied to
                         both analyses; default = 1e-5
+  --download_mlst_latest [DOWNLOAD_MLST_LATEST]
+                        Optional argument for use with --mlst True; True or
+                        False; download the latest version of the seven-gene
+                        multi-locus sequence typing (MLST) scheme available in
+                        PubMLST; if this is False, BTyper3 will search for the
+                        appropriate files in the seq_mlst_db directory;
+                        default = False
 ```
 
 For help:
@@ -298,6 +384,8 @@ For the version:
 btyper3 --version
 ```
 
+If this is your first time running BTyper3, and you are performing MLST (`--mlst True`, by default), make sure to use `--download_mlst_latest True` to download the PubMLST *B. cereus* database for the first time.
+
 ------------------------------------------------------------------------
   
   
@@ -307,7 +395,7 @@ A single BTyper3 run will deposit the following in your specified output directo
   
 ```btyper3_final_results``` (*directory*): Final results directory in which BTyper3 deposits all of its output files. BTyper3 creates this directory in your specified output directory (```--output```) 
 
-```your_genome_final_results.txt``` (*file*): Final tab-separated text file, 1 per input genome. BTyper3 creates this file, which has a header (denoted with "#"), followed by a single row containing results for the input genome, where where columns contain the following:
+```your_genome_final_results.txt``` (*file*): Final tab-separated text file, 1 per input genome. BTyper3 creates this file, which has a header (denoted with "#"), followed by a single row containing results for the input genome, where columns contain the following:
 
 * **Column 1: #filename**
 The path to the fasta file supplied as input.
@@ -321,25 +409,61 @@ The *B. cereus* group genomospecies producing the highest average nucleotide ide
 * **Column 4: subspecies(ANI)**
 Assigned *B. cereus* group subspecies, with the corresponding ANI value in parentheses, if applicable. If the input genome does not meet any subspecies thresholds, a subspecies designation of "No subspecies" is given. If subspecies assignment is not performed (```--ani_subspecies False```), a designation of "(Subspecies assignment not performed)" is given.
 
-* **Column 5: anthrax_toxin(genes)**
-Number of anthrax toxin-encoding genes detected in the input genome, out of the total number of anthrax toxin genes required for a genome to be assigned to biovar Anthracis. Anthrax toxin genes detected in the input genome are listed in parentheses.
+* **Column 5: Pseudo_Gene_Flow_Unit(ANI)**
+Assigned *B. cereus* group pseudo-gene flow unit, with the corresponding ANI value relative to the pseudo-gene flow unit medoid genome in parentheses. If the input genome does not fall within the observed ANI boundary for any previously delineated "true" gene flow unit, an asterisk is appended to the pseudo-gene flow unit name.
 
-* **Column 6: cereulide(genes)**
-Number of cereulide synthetase-encoding genes detected in the input genome, out of the total number of cereulide synthetase genes required for a genome to be assigned to biovar Emeticus. Cereulide synthetase genes detected in the input genome are listed in parentheses.
+* **Column 6: anthrax_toxin(genes)**
+Number of anthrax toxin-encoding genes detected in the input genome, out of the total number of anthrax toxin genes required for a genome to be assigned to biovar Anthracis (i.e., 3 genes; *cya, lef, pagA*). Anthrax toxin genes detected in the input genome are listed in parentheses.
 
-* **Column 7: Bt(genes)**
+* **Column 7: emetic_toxin_cereulide(genes)**
+Number of cereulide synthetase-encoding genes detected in the input genome, out of the total number of cereulide synthetase genes required for a genome to be assigned to biovar Emeticus (i.e., 4 genes; *cesABCD*). Cereulide synthetase genes detected in the input genome are listed in parentheses.
+
+* **Column 8: diarrheal_toxin_Nhe(genes)**
+Number of non-hemolytic enterotoxin (Nhe)-encoding genes detected in the input genome, out of three (*nheABC*). Nhe-encoding genes detected in the input genome are listed in parentheses.
+
+* **Column 9: diarrheal_toxin_Hbl(genes)**
+Number of hemolysin BL (Hbl)-encoding genes detected in the input genome, out of four (*hblABCD*). Hbl-encoding genes detected in the input genome are listed in parentheses.
+
+* **Column 10: diarrheal_toxin_CytK(top_hit)**
+Highest-scoring Cytotoxin K (CytK)-encoding gene detected in the input genome (either *cytK-1* or *cytK-2*). The highest-scoring CytK-encoding gene detected in the input genome is listed in parentheses.
+
+* **Column 11: sphingomyelinase_Sph(gene)**
+Sphingomyelinase (Sph)-encoding gene detected in the input genome (*sph*). The Sph-encoding gene detected in the input genome is listed in parentheses.
+
+* **Column 12: capsule_Cap(genes)**
+Number of *B. anthracis*-associated poly-γ-D-glutamic acid capsule (Cap)-encoding genes detected in the input genome, out of five (*capABCDE*). Cap-encoding genes detected in the input genome are listed in parentheses.
+
+* **Column 13: capsule_Has(genes)**
+Number of hyaluronic acid capsule (Has)-encoding genes detected in the input genome, out of three (*hasABC*). Has-encoding genes detected in the input genome are listed in parentheses.
+
+* **Column 14: capsule_Bps(genes)**
+Number of *"B. cereus"* exo-polysaccharide capsule (Bps)-encoding genes detected in the input genome, out of nine (*bpsXABCDEFGH*). Bps-encoding genes detected in the input genome are listed in parentheses.
+
+* **Column 15: Bt(genes)**
 Total number of *Bacillus thuringiensis* toxin (Bt toxin) genes detected in the input genome. Bt toxin genes detected in the input genome are listed in parentheses. **Note: BTyper3 currently detects known Bt toxin genes (i.e., those present in the <a href="http://www.btnomenclature.info/">Bt toxin nomenclature database</a>; accessed September 19, 2019)  using translated nucleotide blast (tblastn). This approach is conservative to reflect the analyses conducted in the manuscript (i.e., to limit false positives).**
 
-* **Column 8: final_taxon_names**
+* **Column 16: PubMLST_ST\[clonal_complex](perfect_matches)**
+Sequence type (ST) assigned using PubMLST's seven-gene multi-locus sequence typing (MLST) scheme for *B. cereus s.l.* Square brackets contain the name of the PubMLST clonal complex associated with the ST, if available/applicable. Parentheses contain the number of perfect allele matches (i.e., with 100% nucleotide identity and coverage) out of seven possible.
+
+* **Column 17: Adjusted_panC_Group(predicted_species)**
+*panC* group assigned using the adjusted, eight-group *panC* group assignment scheme proposed by Carroll, et al. *panC* sequences of effective and proposed *B. cereus s.l.* species are also included in the database but are assigned a species name (e.g., “Group_manliponensis”) rather than a number (i.e., Group_I to Group_VIII). Species associated with a *panC* group are listed in parentheses. If the query genome does not share >= 99% nucleotide identity and/or >= 80% coverage with one or more *panC* alleles in the database, the closest-matching *panC* group is reported with an asterisk.
+
+* **Column 18: final_taxon_names**
 Taxonomic assignment of the isolate, written from longest (species, subspecies [if applicable], and biovars [if applicable]) to shortest (biovars, if applicable) form. If the input genome does not share >= 92.5 ANI with any known *B. cereus* group species medoid genome (i.e., there is an asterisk appended to the species name in the "species(ANI)" column), a species designation of "(Species unknown)" is given (this designation is also used if species assignment is not performed, i.e., ```--ani_species False```). If 2 or more anthrax toxin genes and/or cereulide synthetaste genes are detected in the input genome, but one or more anthrax toxin genes and cereulide synthetase genes are missing, respectively, an asterisk is appended to the biovar (i.e., "Anthracis\*" and "Emeticus\*", respectively)
 
 ```species``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during species assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/species```).
 
 ```subspecies``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during subspecies assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/subspecies```).
 
+```geneflow``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during pseudo-gene flow unit assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/geneflow```).
+
 ```virulence``` (*directory*): Directory in which BTyper3 deposits raw blast output files during virulence gene detection. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/virulence```).
 
 ```bt``` (*directory*): Directory in which BTyper3 deposits raw blast output files during Bt gene detection. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/bt```).
+
+```mlst``` (*directory*): Directory in which BTyper3 deposits raw blast output files during seven-gene MLST. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/mlst```).
+
+```panC``` (*directory*): Directory in which BTyper3 deposits raw blast output files during *panC* group assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/panC```).
 
 ```logs``` (*directory*): Directory in which BTyper3 deposits its log files for a run. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/logs```).
 
@@ -350,28 +474,32 @@ Taxonomic assignment of the isolate, written from longest (species, subspecies [
 
 ### build_btyper3_anib_db.py
 
-* **Purpose:** download database(s) to be used for species and subspecies assignment (```--ani_species True``` and/or ```--ani_subspecies True```); must be run before performing species and subspecies assignment
+* **Purpose:** download database(s) to be used for species and/or subspecies and/or pseudo-gene flow unit assignment (```--ani_species True``` and/or ```--ani_subspecies True``` and/or `--ani_geneflow True`); must be run before performing species and/or subspecies and/or pseudo-gene flow unit assignment
 
 ```
-usage: build_btyper3_ani_db.py -db [full, species-only, subspecies-only]
+usage: build_btyper3_ani_db.py -db [full, species-only, subspecies-only, geneflow-only]
 
 optional arguments:
   -h, --help            show this help message and exit
   -db [DATABASE], --database [DATABASE]
                         Optional argument; Specify the ANI database to
                         download for use with FastANI (--ani_species True
-                        and/or --ani_subspecies True options): full, species-
-                        only, subspecies-only; full for 98M database with
-                        medoid genomes of 18 Bacillus cereus group
-                        genospecies, plus 2 subspecies genomes (used with
-                        --ani_species True and --ani_subspecies True);
-                        species-only for 87M database with medoid genomes of
-                        18 Bacillus cereus group genospecies (subspecies
+                        and/or --ani_subspecies True and/or --ani_geneflow
+                        True options): full, species-only, subspecies-only,
+                        geneflow-only; full for 102M database with medoid
+                        genomes of 18 Bacillus cereus group genomospecies,
+                        plus 2 subspecies genomes (used with --ani_species
+                        True and --ani_subspecies True); species-only for 91M
+                        database with medoid genomes of 18 Bacillus cereus
+                        group genomospecies (subspecies genomes are not
+                        downloaded; used with --ani_species True and
+                        --ani_subspecies False); subspecies-only for 11M
+                        database with 2 subspecies genomes (genomospecies
                         genomes are not downloaded; used with --ani_species
-                        True and --ani_subspecies False); subspecies-only for
-                        11M database with 2 subspecies genomes (genospecies
-                        genomes are not downloaded; used with --ani_species
-                        False and --ani_subspecies True); default = full
+                        False and --ani_subspecies True); geneflow-only for
+                        the 198M database with 37 genomes (used for pseudo-
+                        gene flow unit assignment with --ani_geneflow True);
+                        default = full
 ```
 Users will then be prompted in the terminal to type "yes" and press ENTER to confirm the download.
 
@@ -398,9 +526,27 @@ No; BTyper3 requires an assemlbed genome in FASTA format. While the original BTy
 
 No; BTyper3 requires whole genomes of single *B. cereus* group isolates, as it relies on ANI-based methods.
 
-* **Can I use partial nucleotide sequences (e.g., plasmid sequences, MLST genes, *rpoB* alleles, etc.) as input for BTyper3?**
+* **Can I use partial nucleotide sequences (e.g., plasmid sequences, MLST genes, *panC* alleles, etc.) as input for BTyper3?**
   
-No; unlike its predecessor, BTyper3 requires whole genomes, as it relies on average-nucleotide identity (ANI)-based methods for species/subspecies assignment.
+Yes, but only if you set all ANI-based methods to False (i.e., make sure to include `--ani_species False --ani_subspecies False` in your command), as ANI-based methods require whole genomes. 
+
+To perform seven-gene MLST only, using the latest version of the PubMLST *B. cereus* database, use the following command:
+
+```
+btyper3 -i [fasta] -o [output directory] --ani_species False --ani_subspecies False --virulence False --bt False --panC False --download_mlst_latest True
+```
+
+To perform *panC* group assignment only, use the following command:
+
+```
+btyper3 -i [fasta] -o [output directory] --ani_species False --ani_subspecies False --virulence False --bt False --mlst False
+```
+
+To detect virulence factors and Bt toxin-encoding genes in a nucleotide sequence (e.g., a plasmid sequence), use the following command:
+
+```
+btyper3 -i [fasta] -o [output directory] --ani_species False --ani_subspecies False --mlst False --panC False
+```
 
 * **Can I use WGS data from organisms that don't belong to the *Bacillus cereus* group?**
   
@@ -479,14 +625,3 @@ Gee, JE, et al. Draft Genome Sequence of *Bacillus cereus* Strain BcFL2013, a Cl
 
 
 Disclaimer: BTyper3 is pretty neat! However, no tool is perfect, and BTyper3 cannot definitively prove whether an isolate is pathogenic or not. As always, interpret your results with caution. We are not responsible for taxonomic misclassifications, misclassifications of an isolate's pathogenic potential or industrial utility, and/or misinterpretations (biological, statistical, or otherwise) of BTyper3 results.
-
-
-
-
-
-
-
-
-
-
-
