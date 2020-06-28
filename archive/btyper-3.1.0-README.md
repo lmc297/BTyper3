@@ -20,7 +20,7 @@ Carroll, Laura M., Martin Wiedmann, Jasna Kovac. 2020. "Proposal of a Taxonomic 
 
 Jain, Chirag, Luis M. Rodriguez-R, Adam M. Phillippy, Konstantinos T. Konstantinidis, Srinivas Aluru. 2018. High throughput ANI analysis of 90K prokaryotic genomes reveals clear species boundaries. *Nature Communications* 9(1):5114. doi: 10.1038/s41467-018-07641-9.
 
-#### If you used BTyper3 to perform biovar assignment and/or to identify virulence factors and/or to identify Bt toxin-encoding genes and/or to perform *panC* group assignment and/or to perform seven-gene multi-locus sequence typing (MLST), please additionally cite:
+#### If you used BTyper3 to perform biovar assignment and/or to identify virulence factors and/or to identify Bt toxin-encoding genes, please additionally cite:
 
 Camacho, Christiam, George Coulouris, Vahram Avagyan, Ning Ma, Jason Papadopoulos, Kevin Bealer, Thomas L Madden. 2009. BLAST+: architecture and applications. *BMC Bioinformatics* 10:421. doi: 10.1186/1471-2105-10-421.
 
