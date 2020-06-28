@@ -209,7 +209,7 @@ After running any command, follow the instructions in your terminal.
   
 2. <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add BLAST+ to your path</a>, if necessary (to check if BLAST+ is in your path, try running ```makeblastdb -h``` and ```tblastn -h``` from your command line; you should get a help message for each command, with no error messages)
 
-3. Optional: <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add fastANI to your path</a>, if necessary (to check if fastANI is in your path, try running ```fastANI -h``` from your command line; you should get a help message, with no error messages). Note that this step is optional; if you want to perform species and/or subspecies assignment using BTyper3, you can just use the ```--fastani_path``` argument and supply the path to the fastANI executable (```--fastani_path /path/to/fastANI```)
+3. Optional: <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add fastANI to your path</a>, if necessary (to check if fastANI is in your path, try running ```fastANI -h``` from your command line; you should get a help message, with no error messages). Note that this step is optional; if you want to perform species and/or subspecies and/or pseudo-gene flow unit assignment using BTyper3, you can just use the ```--fastani_path``` argument and supply the path to the fastANI executable (```--fastani_path /path/to/fastANI```)
     
 4. Download the BTyper3 source file, and store it in your directory of choice:
 
