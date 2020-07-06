@@ -16,6 +16,8 @@ Post issues at https://github.com/lmc297/BTyper3/issues
   
 Carroll, Laura M., Martin Wiedmann, Jasna Kovac. 2020. "Proposal of a Taxonomic Nomenclature for the *Bacillus cereus* Group Which Reconciles Genomic Definitions of Bacterial Species with Clinical and Industrial Phenotypes." *mBio* 11(1): e00034-20; DOI: 10.1128/mBio.00034-20.
 
+Carroll, Laura M., Rachel A. Cheng, Jasna Kovac. 2020. "No Assembly Required: Using BTyper3 to Assess the Congruency of a Proposed Taxonomic Framework for the *Bacillus cereus* group with Historical Typing Methods." *bioRxiv* 2020.06.28.175992; DOI: https://doi.org/10.1101/2020.06.28.175992.
+
 #### If you used BTyper3 to perform species and/or subspecies and/or pseudo-gene flow unit assignment, please additionally cite:
 
 Jain, Chirag, Luis M. Rodriguez-R, Adam M. Phillippy, Konstantinos T. Konstantinidis, Srinivas Aluru. 2018. High throughput ANI analysis of 90K prokaryotic genomes reveals clear species boundaries. *Nature Communications* 9(1):5114. doi: 10.1038/s41467-018-07641-9.
