@@ -32,12 +32,6 @@ Cock, Peter J. A., Tiago Antao, Jeffrey T. Chang, Brad A. Chapman, Cymon J. Cox,
 
 Jolley, Keith A., James E. Bray, Martin C.J. Maiden. 2018. Open-access bacterial population genomics: BIGSdb software, the PubMLST.org website and their applications. *Wellcome Open Research* 3: 124. doi: doi:10.12688/wellcomeopenres.14826.1
 
-#### If you used BTyper3 to perform *panC* group assignment, please additionally cite:
-
-Guinebretière, Marie-Hélène, Fabiano L. Thompson, Alexei Sorokin, Philippe Normand, Peter Dawyndt, Monika Ehling-Schulz, Birgitta Svensson, Vincent Sanchis, Christophe Nguyen-The, Marc Heyndrickx, Paul De Vos. 2008. Ecological Diversification in the *Bacillus Cereus* Group. *Environmental Microbiology* 10(4): 851-65. doi: 10.1111/j.1462-2920.2007.01495.x.
-
-Guinebretière, Marie-Hélène, Philippe Velge, Olivier Couvert, Frédéric Carlin, Marie-Laure Debuyser, Christophe Nguyen-The. 2010. Ability of *Bacillus cereus* Group Strains To Cause Food Poisoning Varies According to Phylogenetic Affiliation (Groups I to VII) Rather than Species Affiliation. *Journal of Clinical Microbiology* 48(9): 3388–3391. doi: 10.1128/JCM.00921-10.
-
 
 ------------------------------------------------------------------------
   
