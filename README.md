@@ -184,7 +184,11 @@ build_btyper3_anib_db.py -db geneflow-only
 
 After running any command, follow the instructions in your terminal.
 
-12. **If you want to use BTyper3 to perform seven-gene MLST (performed by default):** if this is your first time running your newly installed BTyper3, make sure to add `--download_mlst_latest True` to your command. This will download the latest version of the *B. cereus s.l.* MLST database from <a href="https://pubmlst.org/bigsdb?db=pubmlst_bcereus_seqdef">PubMLST</a>. In subsequent runs, you can set `--download_mlst_latest False` to use this version of the database that is now available on your computer, or set `--download_mlst_latest True` to download the most recent database available on PubMLST.
+12. Download the latest PubMLST database by running the following command from your terminal:
+
+```
+download_pubmlst_latest.py
+```
 
 
 ### Download and run BTyper3 using source file (macOS and Ubuntu)
@@ -209,12 +213,12 @@ After running any command, follow the instructions in your terminal.
     
 4. Download the BTyper3 source file, and store it in your directory of choice:
 
-https://github.com/lmc297/BTyper3/blob/master/archive/btyper-3.1.0.tar.gz
+https://github.com/lmc297/BTyper3/blob/master/archive/btyper-3.1.1.tar.gz
 
 5. Extract BTyper3 program/databases
 
 ```
-tar -xzvf btyper-3.1.0.tar.gz
+tar -xzvf btyper-3.1.1.tar.gz
 ```
 
 Note: to ensure that BTyper3 works correctly, make sure database directories (beginning with "seq_") remain in the same directory as the BTyper3 executable (stored as "btyper3").
@@ -253,7 +257,11 @@ build_btyper3_anib_db.py -db geneflow-only
 
 After running any command, follow the instructions in your terminal.
 
-8. **If you want to use BTyper3 to perform seven-gene MLST (performed by default):** if this is your first time running your newly installed BTyper3, make sure to add `--download_mlst_latest True` to your command. This will download the latest version of the *B. cereus s.l.* MLST database from <a href="https://pubmlst.org/bigsdb?db=pubmlst_bcereus_seqdef">PubMLST</a>. In subsequent runs, you can set `--download_mlst_latest False` to use this version of the database that is now available on your computer, or set `--download_mlst_latest True` to download the most recent database available on PubMLST.
+8. Download the latest PubMLST database by running the following command from your terminal:
+
+```
+download_pubmlst_latest.py
+```
 
 Note: In the examples below, BTyper3 commands are shown as ```btyper3 [options...]```. If you are calling BTyper3 from the source file (i.e. you didn't install BTyper3 using Homebrew), keep in mind that you may have to call python3 and supply the path to btyper3 to execute the program or related scripts: ```python3 btyper3 [options...]```.
 
@@ -379,9 +387,6 @@ For the version:
 ```
 btyper3 --version
 ```
-
-If this is your first time running BTyper3, and you are performing MLST (`--mlst True`, by default), make sure to use `--download_mlst_latest True` to download the PubMLST *B. cereus* database for the first time.
-
 ------------------------------------------------------------------------
   
   
@@ -500,6 +505,17 @@ optional arguments:
 Users will then be prompted in the terminal to type "yes" and press ENTER to confirm the download.
 
 For help, type ```build_btyper3_anib_db.py -h``` or ```build_btyper3_anib_db.py --help```
+
+### download_pubmlst_latest.py
+
+* **Purpose:** download latest PubMLST database for *Bacillus cereus* to be used for *in silico* seven-gene MLST (```--mlst True```); must be run before performing MLST (or, alternatively, set ```--download_mlst_latest True``` when running ```btyper3```)
+
+```
+usage: build_btyper3_ani_db.py
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
 
 ------------------------------------------------------------------------
   
