@@ -236,23 +236,23 @@ Note: In the examples below, BTyper3 commands are shown as ```btyper3 [options..
 A. For the full database, which can be used to perform both species and subspecies assignment, but not pseudo-gene flow unit assignment (needs about 102M disk space):
 
 ```
-build_btyper3_anib_db.py -db full
+python3 build_btyper3_anib_db.py -db full
 ```
 
 B. For species-only database, which can be used to perform species assignment (but not subspecies or pseudo-gene flow unit assignment; needs about 91M disk space):
 ```
-build_btyper3_anib_db.py -db species-only
+python3 build_btyper3_anib_db.py -db species-only
 ```
 
 C. For subspecies-only database, which can be used to perform subspecies assignment (but not species or pseudo-gene flow unit assignment; needs about 11M disk space):
 ```
-build_btyper3_anib_db.py -db subspecies-only
+python3 build_btyper3_anib_db.py -db subspecies-only
 ```
 
 D. For geneflow-only database, which can be used to perform pseudo-gene flow unit assignment (but not species or subspecies assignment; needs about 198M disk space):
 
 ```
-build_btyper3_anib_db.py -db geneflow-only
+python3 build_btyper3_anib_db.py -db geneflow-only
 ```
 
 After running any command, follow the instructions in your terminal.
@@ -260,7 +260,7 @@ After running any command, follow the instructions in your terminal.
 8. Download the latest PubMLST database by running the following command from your terminal:
 
 ```
-download_pubmlst_latest.py
+python3 download_pubmlst_latest.py
 ```
 
 Note: In the examples below, BTyper3 commands are shown as ```btyper3 [options...]```. If you are calling BTyper3 from the source file (i.e. you didn't install BTyper3 using Homebrew), keep in mind that you may have to call python3 and supply the path to btyper3 to execute the program or related scripts: ```python3 btyper3 [options...]```.
