@@ -2,6 +2,8 @@
 
 All noteable changes to BTyper3 will be documented in this file
 
+## [3.1.0]
+
 ## [3.0.2] 2019-11-18
 ### Changed
 - Swapped anthrax and cereulide column names in final results file (previously, the column header for anthrax genes was above cereulide synthetase genes in the final results file, and vice versa; the typo was thus fixed)
