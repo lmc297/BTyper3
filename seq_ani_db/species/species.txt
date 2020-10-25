@@ -4,7 +4,7 @@ B_manliponensis_JCM_15802_GCF_000712595.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/a
 B_toyonensis_BCT-7112_GCF_000496285.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/496/285/GCF_000496285.1_ASM49628v1/GCF_000496285.1_ASM49628v1_genomic.fna.gz
 B_mosaicus_PR02_GCF_001683155.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/683/155/GCF_001683155.1_ASM168315v1/GCF_001683155.1_ASM168315v1_genomic.fna.gz
 B_mycoides_AFS098983_GCF_002550135.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/550/135/GCF_002550135.1_ASM255013v1/GCF_002550135.1_ASM255013v1_genomic.fna.gz
-B_UnknownSpecies14_AFS092566_GCF_002550855.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/550/855/GCF_002550855.1_ASM255085v1/GCF_002550855.1_ASM255085v1_genomic.fna.gz
+#B_UnknownSpecies14_AFS092566_GCF_002550855.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/550/855/GCF_002550855.1_ASM255085v1/GCF_002550855.1_ASM255085v1_genomic.fna.gz
 B_luti_AFS005615_GCF_002559215.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/559/215/GCF_002559215.1_ASM255921v1/GCF_002559215.1_ASM255921v1_genomic.fna.gz
 B_UnknownSpecies15_AFS028441_GCF_002559665.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/559/665/GCF_002559665.1_ASM255966v1/GCF_002559665.1_ASM255966v1_genomic.fna.gz
 B_cereus_AFS065770_GCF_002568015.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/568/015/GCF_002568015.1_ASM256801v1/GCF_002568015.1_ASM256801v1_genomic.fna.gz
