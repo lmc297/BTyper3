@@ -7,10 +7,10 @@ All noteable changes to BTyper3 will be documented in this file
 - Added `download_pubmlst_latest.py` script, which users can run to download latest PubMLST database for *Bacillus cereus*, independently of executing the `btyper3` program
 
 ### Changed
-- Updated `--download_mlst_latest` portion of `btyper3` code to be compatible with changes to <a href="https://pubmlst.org/data/dbases.xml">PubMLST's XML</a> format; changes made by PubMLST to the filenames in the XML caused previous versions of BTyper3 to produce an error and not download the database
+- Updated `--download_mlst_latest` portion of `btyper3` code to be compatible with changes to <a href="https://pubmlst.org/data/dbases.xml">PubMLST's XML</a> format; recent changes made by PubMLST to the filenames in the XML caused previous versions of BTyper3 to produce an error and not download the database
 
 ### Removed
-- Removed Unknown Species 14 from the species reference genomes used for genomospecies assignment; using recent genomes submitted to NCBI (accessed 2020-05-14), Unknown Species 14 was found to overlap with *B. luti* at a 92.5 ANI threshold (see genomes with NCBI RefSeq Assembly Accessions GCF_008764075.1, GCF_007667455.1, and GCF_007673665.1, which were assigned to both *B. luti* and Unknown Species 14 at a 92.5 ANI threshold); Unknown Species 14 was therefore merged into *B. luti* in BTyper3 v. 3.1.1
+- Removed <a href="https://mbio.asm.org/content/11/1/e00034-20">Unknown Species 14</a> from the species reference genomes used for genomospecies assignment; using recent genomes submitted to NCBI (accessed 2020-05-14), Unknown Species 14 was found to overlap with *B. luti* at a 92.5 ANI threshold (see genomes with NCBI RefSeq Assembly Accessions GCF_008764075.1, GCF_007667455.1, and GCF_007673665.1, which were assigned to both *B. luti* and Unknown Species 14 at a 92.5 ANI threshold); Unknown Species 14 was therefore merged into *B. luti* in BTyper3 v. 3.1.1
 
 ## [3.1.0] 2020-06-28
 ### Added
