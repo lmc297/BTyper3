@@ -535,6 +535,23 @@ BTyper3 is a completely novel tool for determining the identity of *B. cereus* g
 
 BTyper3 uses python3; python2, which the original BTyper relied on, <a href="https://pythonclock.org/">will not be maintained in the future.</a> Additionally (and conveniently!), the most recent version of the original BTyper was version 2, making BTyper3 a logical next step.
 
+* **Why doesn't BTyper3 perform *rpoB* allelic typing like the original BTyper?**
+
+When developing BTyper3, we found that <a href="https://www.frontiersin.org/articles/10.3389/fmicb.2020.580691/full">the resolution *rpoB* provided was lower than that of MLST and *panC*</a>. We thus opted to not currently include it in BTyper3 (this may change in the future, but for now, see the <a href="https://github.com/lmc297/BTyper">original BTyper</a> if you'd like to perform *rpoB* allelic typing).
+
+* **Why doesn't BTyper3 perform antimicrobial resistance (AMR) determinant detection like the original BTyper?**
+
+The AMR determinant detection method implemented in the original BTyper was difficult to maintain and wasn't *B. cereus* group-specific; we thus considered it to fall outside of the scope of BTyper3, and we opted to not include it. In addition to the <a href="https://github.com/lmc297/BTyper">original BTyper</a>, there are many AMR determinant detection methods available now, including some that do <a href="https://github.com/tseemann/abricate">effectively the same thing as the original BTyper</a>.
+
+* **Can I analyze BTyper3 output files with <a href="https://github.com/lmc297/BMiner">BMiner</a>?**
+
+Sadly, BMiner currently does not support BTyper3 files as input, as BTyper3 and the <a href="https://github.com/lmc297/BTyper">original BTyper (version 2.X.X and earlier)</a> produce files in different output formats. BTyper3 was developed to produce output files in a standard tabular format, which we anticipate will be easier for users to work with. 
+
+To aggregate all BTyper3 results from a single run into a single tab-separated table which can then be loaded into R, Excel, etc., simply:
+
+1. Move to your BTyper3 output directory: `cd < name of the directory you supplied to btyper3 -o >`
+2. Concatenate BTyper3 final results files into a single file, here named `btyper3_all_results.txt` (the `-v` option excludes the file headers): `cat btyper3_final_results/*_final_results.txt | grep -v "#filename" > btyper3_all_results.txt`
+
 * **Can I use sequencing reads (e.g., Illumina reads) as input for BTyper3?**
 
 No; BTyper3 requires an assemlbed genome in FASTA format. While the original BTyper had the option to use SPAdes for genome assembly, we opted to not include it in BTyper3, as it became time-consuming to maintain, without adding significant value to users.
