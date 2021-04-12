@@ -25,30 +25,30 @@ def download_pubmlst(btyper3_path):
 	xml = btyper3_path + "seq_mlst_db/pubmlst.xml"
 	with open(xml, "wb") as f:
 		f.write(resp.content)
-		tree=ET.parse(xml)
-		root=tree.getroot()
-		species={}
-		for parent in root.iter("species"):
-			species[parent.text.strip()]=[]
-			for child in parent.iter("url"):
-				species[parent.text.strip()].append(child.text)
+	tree=ET.parse(xml)
+	root=tree.getroot()
+	species={}
+	for parent in root.iter("species"):
+		species[parent.text.strip()]=[]
+		for child in parent.iter("url"):
+			species[parent.text.strip()].append(child.text)
 
-		urlcol = species["Bacillus cereus"]
+	urlcol = species["Bacillus cereus"]
 
-		for u in urlcol:
+	for u in urlcol:
 	
 
-			if "alleles_fasta" in u:
-				fname = u.split("/")[-2].strip()
-				resp = requests.get(u)
-				with open(btyper3_path + "seq_mlst_db/mlst.fas", "ab") as outfile:
-					outfile.write(resp.content)
+		if "alleles_fasta" in u:
+			fname = u.split("/")[-2].strip()
+			resp = requests.get(u)
+			with open(btyper3_path + "seq_mlst_db/mlst.fas", "ab") as outfile:
+				outfile.write(resp.content)
 
-			elif "profiles_csv" in u:
-				fname = "bcereus.txt"
-				resp = requests.get(u)
-				with open(btyper3_path + "seq_mlst_db/" + fname, "wb") as outfile:
-					outfile.write(resp.content)
+		elif "profiles_csv" in u:
+			fname = "bcereus.txt"
+			resp = requests.get(u)
+			with open(btyper3_path + "seq_mlst_db/" + fname, "wb") as outfile:
+				outfile.write(resp.content)
 
 			
 	print("Finished downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
@@ -58,7 +58,7 @@ def download_pubmlst(btyper3_path):
 
 def main():
 
-	parser = argparse.ArgumentParser(usage = "build_btyper3_ani_db.py")
+	parser = argparse.ArgumentParser(usage = "download_pubmlst_latest.py")
 	
 	btyper3_path = get_btyper3_path()
 

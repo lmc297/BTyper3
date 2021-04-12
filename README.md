@@ -213,17 +213,17 @@ download_pubmlst_latest.py
     
 4. Download the BTyper3 source file, and store it in your directory of choice:
 
-To download manually, click the following URL, and then click the "Download" button: "https://github.com/lmc297/BTyper3/blob/master/archive/btyper-3.1.1.tar.gz
+To download manually, click the following URL, and then click the "Download" button: "https://github.com/lmc297/BTyper3/blob/master/archive/btyper-3.1.2.tar.gz
 
 Or with `wget`:
 ```
-wget https://github.com/lmc297/BTyper3/raw/master/archive/btyper-3.1.1.tar.gz
+wget https://github.com/lmc297/BTyper3/raw/master/archive/btyper-3.1.2.tar.gz
 ```
 
 5. Extract BTyper3 program/databases
 
 ```
-tar -xzvf btyper-3.1.1.tar.gz
+tar -xzvf btyper-3.1.2.tar.gz
 ```
 
 Note: to ensure that BTyper3 works correctly, make sure database directories (beginning with "seq_") remain in the same directory as the BTyper3 executable (stored as "btyper3").
