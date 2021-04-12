@@ -2,6 +2,10 @@
 
 All noteable changes to BTyper3 will be documented in this file
 
+## [3.1.2] 2021-04-12
+### Changed
+- Fixed an indentation typo in `download_pubmlst_latest.py` so that `xml` could properly parse the PubMLST xml
+
 ## [3.1.1] 2020-10-25
 ### Added
 - Added `download_pubmlst_latest.py` script, which users can run to download latest PubMLST database for *Bacillus cereus*, independently of executing the `btyper3` program
