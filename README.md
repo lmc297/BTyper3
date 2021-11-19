@@ -22,7 +22,7 @@ The type strain genomes used by BTyper3's `--ani_typestrains` option correspond 
 
 * All members of *Bacillus hominis* (type strain RefSeq Assembly Accession GCF_018332515.1) belong to *B. mycoides*
 
-** Importantly, *B. cereus* group species are often proposed in the literature using unstandardized approaches** (e.g., varying genomospecies thresholds, which may produce overlapping genomospecies). We have added the type strain comparison method in BTyper3 v3.2.0, as users may still want to compare a query genome with the type strains of published *B. cereus* group species. However, interpret results with caution, as some *B. cereus* group genomes may belong to multiple species using type strain genomes. 
+**Importantly, *B. cereus* group species are often proposed in the literature using unstandardized approaches** (e.g., varying genomospecies thresholds, which may produce overlapping genomospecies). We have added the type strain comparison method in BTyper3 v3.2.0, as users may still want to compare a query genome with the type strains of published *B. cereus* group species. However, interpret results with caution, as some *B. cereus* group genomes may belong to multiple species using type strain genomes. 
 
 For more information, check out our:
 
