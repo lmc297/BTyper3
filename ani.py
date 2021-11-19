@@ -38,6 +38,8 @@ class Ani:
 			ani_results_dir = final_results_directory + "subspecies"
 		elif taxon == "geneflow":
 			ani_results_dir = final_results_directory + "geneflow"
+		elif taxon == "typestrains":
+			ani_results_dir = final_results_directory + "typestrains"
 		if not os.path.isdir(ani_results_dir):
 			os.mkdir(ani_results_dir)
 
@@ -93,6 +95,11 @@ class Ani:
 				final_geneflow = psub + "(" + str(maxani) + ")"
 				return(final_geneflow)
 
+			elif taxon == "typestrains":
+				maxtype = maxtax.split("_")[1].strip()
+				final_typestrains = maxtype + "(" + str(maxani) + ")"
+				return(final_typestrains)
+
 		except EmptyDataError:
 			if taxon == "species":
 				final_species = "(Species unknown)"
@@ -103,5 +110,9 @@ class Ani:
 			elif taxon == "geneflow":
 				final_geneflow = "(Pseudo-gene flow unit unknown)"
 				return(final_geneflow)
+			elif taxon == "typestrains":
+				final_typestrains = "(Type strain unknown)"
+				return(final_typestrains)
+				
 
 

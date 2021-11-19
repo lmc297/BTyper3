@@ -11,6 +11,7 @@ class FinalResults:
 		species = final_species string output by run_fastani in ani.py 
 		subspecies = final_subspecies string output by run_fastani in ani.py
 		geneflow = final_geneflow string output by run_fastani in ani.py
+		typestrains = final_typestrains string output by run_fastani in ani.py
 		anthracis = list of anthrax toxin genes detected in genome (anthracis produced by parse_virulence)
 		emetic = list of emetic toxin genes detected in genome (emetic produced by parse_virulence)
 		nhe = list of Nhe-encoding genes detected in genome (nhe produced by parse_virulence)
@@ -28,7 +29,7 @@ class FinalResults:
 		
 	"""
 
-	def __init__(self, final_results_directory, infile, prefix, species, subspecies, geneflow, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final):
+	def __init__(self, final_results_directory, infile, prefix, species, subspecies, geneflow, typestrains, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final):
 
 		self.final_results_directory = final_results_directory
 		self.infile = infile,
@@ -36,6 +37,7 @@ class FinalResults:
 		self.species = species
 		self.subspecies = subspecies
 		self.geneflow = geneflow
+		self.typestrains = typestrains
 		self.anthracis = anthracis
 		self.emetic = emetic
 		self.nhe = nhe
@@ -49,9 +51,9 @@ class FinalResults:
 		self.mlst_final = mlst_final
 		self.panC_final = panC_final
 
-	def print_final_results(self, final_results_directory, infile, prefix, species, subspecies, geneflow, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final):
+	def print_final_results(self, final_results_directory, infile, prefix, species, subspecies, geneflow, typestrains, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final):
 
-		header = ["#filename", "prefix", "species(ANI)", "subspecies(ANI)", "Pseudo_Gene_Flow_Unit(ANI)", "anthrax_toxin(genes)", "emetic_toxin_cereulide(genes)", "diarrheal_toxin_Nhe(genes)", "diarrheal_toxin_Hbl(genes)", "diarrheal_toxin_CytK(top_hit)", "sphingomyelinase_Sph(gene)", "capsule_Cap(genes)", "capsule_Has(genes)", "capsule_Bps(genes)", "Bt(genes)", "PubMLST_ST[clonal_complex](perfect_matches)", "Adjusted_panC_Group(predicted_species)", "final_taxon_names"]
+		header = ["#filename", "prefix", "species(ANI)", "subspecies(ANI)", "Pseudo_Gene_Flow_Unit(ANI)", "Closest_Type_Strain(ANI)", "anthrax_toxin(genes)", "emetic_toxin_cereulide(genes)", "diarrheal_toxin_Nhe(genes)", "diarrheal_toxin_Hbl(genes)", "diarrheal_toxin_CytK(top_hit)", "sphingomyelinase_Sph(gene)", "capsule_Cap(genes)", "capsule_Has(genes)", "capsule_Bps(genes)", "Bt(genes)", "PubMLST_ST[clonal_complex](perfect_matches)", "Adjusted_panC_Group(predicted_species)", "final_taxon_names"]
 
 		biovars = []
 		if anthracis != "(Virulence factor detection not performed)" and emetic != "(Virulence factor detection not performed)":
@@ -127,7 +129,7 @@ class FinalResults:
 			final_taxon = final_taxon + "; B. " + final_biovars
 			
 
-		final_line = [infile, prefix, species, subspecies, geneflow, Anthracis, Emeticus, Nhe, Hbl, CytK, Sph, Cap, Has, Bps, Thuringiensis, mlst_final, panC_final, final_taxon]
+		final_line = [infile, prefix, species, subspecies, geneflow, typestrains, Anthracis, Emeticus, Nhe, Hbl, CytK, Sph, Cap, Has, Bps, Thuringiensis, mlst_final, panC_final, final_taxon]
 
 		with open(final_results_directory + prefix + "_final_results.txt", "a") as outfile:
 			print("\t".join(header), file = outfile)

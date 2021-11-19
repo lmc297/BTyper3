@@ -4,7 +4,7 @@
 
 ## Overview
 
-BTyper3 is a command-line tool for taxonomically classifying *Bacillus cereus* group genomes using a novel, standardized nomenclature
+BTyper3 is a command-line tool for taxonomically classifying *Bacillus cereus* group genomes using a standardized nomenclature
 
 The program, as well as the associated databases, can be downloaded from https://github.com/lmc297/BTyper3.
 
@@ -62,10 +62,10 @@ btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory
 btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --fastani_path /path/to/FastANI_executable/fastANI
 ```
 
-#### Perform all default analyses, plus pseudo-gene flow unit assignment, using an assembled genome (complete or draft) in (multi-)FASTA format as input (assumes fastANI is in the user's path):
+#### Perform all default analyses, plus pseudo-gene flow unit assignment AND species type strain comparison, using an assembled genome (complete or draft) in (multi-)FASTA format as input (assumes fastANI is in the user's path):
 
 ```
-btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --ani_geneflow True
+btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --ani_geneflow True --ani_typestrains True
 ```
 
 #### Perform seven-gene MLST only, using user-supplied MLST gene sequences and the latest version of the PubMLST *B. cereus s.l.* database (sequences can be in multi-FASTA format, or concatenated into a single sequence in FASTA format):
@@ -236,29 +236,31 @@ python3 /path/to/executable/btyper3 [options...]
 
 Note: In the examples below, BTyper3 commands are shown as ```btyper3 [options...]```. If you are calling BTyper3 from the source file (i.e. you didn't install BTyper3 using Homebrew), keep in mind that you may have to call python3 and supply the path to btyper3 to execute the program or related scripts: ```python3 btyper3 [options...]```.
 
-7. Download the "species-only", "subspecies-only", "full" (i.e., both "species-only" and "subspecies-only"), or "geneflow-only" database(s) by running one or more of the following commands from your terminal; note that users who want to perform all ANI-based assignment methods implemented in BTyper3 (i.e., species, subspecies, and pseudo-gene flow unit assignment) should download both the "full" and "geneflow-only" databases (i.e., run both command "A" and command "D" below):
+7. Download the "species-only", "subspecies-only", "full" (i.e., both "species-only" and "subspecies-only"), "geneflow-only", or "typestrains-only" database(s) by running one or more of the following commands from your terminal; note that users who want to perform all ANI-based assignment methods implemented in BTyper3 (i.e., species, subspecies, pseudo-gene flow unit assignment, and type strain comparison) should download the "full", "geneflow-only", and "typestrains-only" databases (i.e., run command "A", command "D", AND command "E" below):
 
-A. For the full database, which can be used to perform both species and subspecies assignment, but not pseudo-gene flow unit assignment (needs about 102M disk space):
+A. For the full database, which can be used to perform both species and subspecies assignment, but not pseudo-gene flow unit assignment or type strain comparison (needs about 102M disk space):
 
 ```
 python3 build_btyper3_anib_db.py -db full
 ```
 
-B. For species-only database, which can be used to perform species assignment (but not subspecies or pseudo-gene flow unit assignment; needs about 91M disk space):
+B. For species-only database, which can be used to perform species assignment (but not subspecies, pseudo-gene flow unit assignment, or type strain comparison; needs about 91M disk space):
 ```
 python3 build_btyper3_anib_db.py -db species-only
 ```
 
-C. For subspecies-only database, which can be used to perform subspecies assignment (but not species or pseudo-gene flow unit assignment; needs about 11M disk space):
+C. For subspecies-only database, which can be used to perform subspecies assignment (but not species, pseudo-gene flow unit assignment, or type strain comparison; needs about 11M disk space):
 ```
 python3 build_btyper3_anib_db.py -db subspecies-only
 ```
 
-D. For geneflow-only database, which can be used to perform pseudo-gene flow unit assignment (but not species or subspecies assignment; needs about 198M disk space):
+D. For geneflow-only database, which can be used to perform pseudo-gene flow unit assignment (but not species or subspecies assignment or type strain comparison; needs about 198M disk space):
 
 ```
 python3 build_btyper3_anib_db.py -db geneflow-only
 ```
+
+E. For the typestrains-only database, which can be used to compare a query genome to all *B. cereus* group species type strain genomes (but not species, subspecies, or pseudo-gene flow unit assignment; needs about 138M disk space):
 
 After running any command, follow the instructions in your terminal.
 
@@ -310,6 +312,12 @@ Optional arguments are:
                         Optional argument; True or False; assign genome to a
                         pseudo-gene flow unit using the method described by
                         Carroll, et al. using FastANI; default = False
+  --ani_typestrains [ANI_TYPESTRAINS]
+                        Optional argument; True or False; calculate ANI values
+                        between the query genome relative to all B. cereus
+                        s.l. species type strain genomes using FastANI, and
+                        report the closest species type strain/highest ANI
+                        value; default = False
   --fastani_path [FASTANI_PATH]
                         Optional argument for use with --ani_species True
                         and/or --ani_subspecies True and/or --ani_geneflow
@@ -381,6 +389,8 @@ Optional arguments are:
                         PubMLST; if this is False, BTyper3 will search for the
                         appropriate files in the seq_mlst_db directory;
                         default = False
+  --version             Print version
+
 ```
 
 For help:
@@ -418,43 +428,46 @@ Assigned *B. cereus* group subspecies, with the corresponding ANI value in paren
 * **Column 5: Pseudo_Gene_Flow_Unit(ANI)**
 Assigned *B. cereus* group pseudo-gene flow unit, with the corresponding ANI value relative to the pseudo-gene flow unit medoid genome in parentheses. If the input genome does not fall within the observed ANI boundary for any previously delineated "true" gene flow unit, an asterisk is appended to the pseudo-gene flow unit name.
 
-* **Column 6: anthrax_toxin(genes)**
+* **Column 6: Closest_Type_Strain(ANI)**
+The *B. cereus* group species type strain, which shares the highest ANI value with the query genome, with the ANI value reported in parentheses. **Note: *B. cereus* group species are often proposed in the literature using unstandardized approaches (e.g., varying genomospecies thresholds, which may produce overlapping genomospecies). We have added the type strain comparison method in BTyper3 v3.2.0, as users may still want to compare a query genome with the type strains of published *B. cereus* group species. However, interpret results with caution, as some *B. cereus* group genomes may belong to multiple species using type strain genomes. For more information, check out our <a href="https://www.tandfonline.com/doi/full/10.1080/10408398.2021.1916735">review of *B. cereus* group taxonomy/nomenclature</a>.**
+
+* **Column 7: anthrax_toxin(genes)**
 Number of anthrax toxin-encoding genes detected in the input genome, out of the total number of anthrax toxin genes required for a genome to be assigned to biovar Anthracis (i.e., 3 genes; *cya, lef, pagA*). Anthrax toxin genes detected in the input genome are listed in parentheses.
 
-* **Column 7: emetic_toxin_cereulide(genes)**
+* **Column 8: emetic_toxin_cereulide(genes)**
 Number of cereulide synthetase-encoding genes detected in the input genome, out of the total number of cereulide synthetase genes required for a genome to be assigned to biovar Emeticus (i.e., 4 genes; *cesABCD*). Cereulide synthetase genes detected in the input genome are listed in parentheses.
 
-* **Column 8: diarrheal_toxin_Nhe(genes)**
+* **Column 9: diarrheal_toxin_Nhe(genes)**
 Number of non-hemolytic enterotoxin (Nhe)-encoding genes detected in the input genome, out of three (*nheABC*). Nhe-encoding genes detected in the input genome are listed in parentheses.
 
-* **Column 9: diarrheal_toxin_Hbl(genes)**
+* **Column 10: diarrheal_toxin_Hbl(genes)**
 Number of hemolysin BL (Hbl)-encoding genes detected in the input genome, out of four (*hblABCD*). Hbl-encoding genes detected in the input genome are listed in parentheses.
 
-* **Column 10: diarrheal_toxin_CytK(top_hit)**
+* **Column 11: diarrheal_toxin_CytK(top_hit)**
 Highest-scoring Cytotoxin K (CytK)-encoding gene detected in the input genome (either *cytK-1* or *cytK-2*). The highest-scoring CytK-encoding gene detected in the input genome is listed in parentheses.
 
-* **Column 11: sphingomyelinase_Sph(gene)**
+* **Column 12: sphingomyelinase_Sph(gene)**
 Sphingomyelinase (Sph)-encoding gene detected in the input genome (*sph*). The Sph-encoding gene detected in the input genome is listed in parentheses.
 
-* **Column 12: capsule_Cap(genes)**
+* **Column 13: capsule_Cap(genes)**
 Number of *B. anthracis*-associated poly-γ-D-glutamic acid capsule (Cap)-encoding genes detected in the input genome, out of five (*capABCDE*). Cap-encoding genes detected in the input genome are listed in parentheses.
 
-* **Column 13: capsule_Has(genes)**
+* **Column 14: capsule_Has(genes)**
 Number of hyaluronic acid capsule (Has)-encoding genes detected in the input genome, out of three (*hasABC*). Has-encoding genes detected in the input genome are listed in parentheses.
 
-* **Column 14: capsule_Bps(genes)**
+* **Column 15: capsule_Bps(genes)**
 Number of *"B. cereus"* exo-polysaccharide capsule (Bps)-encoding genes detected in the input genome, out of nine (*bpsXABCDEFGH*). Bps-encoding genes detected in the input genome are listed in parentheses.
 
-* **Column 15: Bt(genes)**
+* **Column 16: Bt(genes)**
 Total number of *Bacillus thuringiensis* toxin (Bt toxin) genes detected in the input genome. Bt toxin genes detected in the input genome are listed in parentheses. **Note: BTyper3 currently detects known Bt toxin genes (i.e., those present in the <a href="http://www.btnomenclature.info/">Bt toxin nomenclature database</a>; accessed September 19, 2019)  using translated nucleotide blast (tblastn). This approach is conservative to reflect the analyses conducted in the manuscript (i.e., to limit false positives).**
 
-* **Column 16: PubMLST_ST\[clonal_complex](perfect_matches)**
+* **Column 17: PubMLST_ST\[clonal_complex](perfect_matches)**
 Sequence type (ST) assigned using PubMLST's seven-gene multi-locus sequence typing (MLST) scheme for *B. cereus s.l.* Square brackets contain the name of the PubMLST clonal complex associated with the ST, if available/applicable. Parentheses contain the number of perfect allele matches (i.e., with 100% nucleotide identity and coverage) out of seven possible.
 
-* **Column 17: Adjusted_panC_Group(predicted_species)**
+* **Column 18: Adjusted_panC_Group(predicted_species)**
 *panC* group assigned using the adjusted, eight-group *panC* group assignment scheme proposed by Carroll, et al. *panC* sequences of effective and proposed *B. cereus s.l.* species are also included in the database but are assigned a species name (e.g., “Group_manliponensis”) rather than a number (i.e., Group_I to Group_VIII). Species associated with a *panC* group are listed in parentheses. If the query genome does not share >= 99% nucleotide identity and/or >= 80% coverage with one or more *panC* alleles in the database, the closest-matching *panC* group is reported with an asterisk.
 
-* **Column 18: final_taxon_names**
+* **Column 19: final_taxon_names**
 Taxonomic assignment of the isolate, written from longest (species, subspecies [if applicable], and biovars [if applicable]) to shortest (biovars, if applicable) form. If the input genome does not share >= 92.5 ANI with any known *B. cereus* group species medoid genome (i.e., there is an asterisk appended to the species name in the "species(ANI)" column), a species designation of "(Species unknown)" is given (this designation is also used if species assignment is not performed, i.e., ```--ani_species False```). If 2 or more anthrax toxin genes and/or cereulide synthetaste genes are detected in the input genome, but one or more anthrax toxin genes and cereulide synthetase genes are missing, respectively, an asterisk is appended to the biovar (i.e., "Anthracis\*" and "Emeticus\*", respectively)
 
 ```species``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during species assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/species```).
@@ -462,6 +475,8 @@ Taxonomic assignment of the isolate, written from longest (species, subspecies [
 ```subspecies``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during subspecies assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/subspecies```).
 
 ```geneflow``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during pseudo-gene flow unit assignment. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/geneflow```).
+
+```typestrains``` (*directory*): Directory in which BTyper3 deposits raw fastANI output files during type strain comparison. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/typestrains```).
 
 ```virulence``` (*directory*): Directory in which BTyper3 deposits raw blast output files during virulence gene detection. BTyper3 creates this directory within the ```btyper3_final_results directory``` within your specified output directory (```output_directory/btyper3_final_results/virulence```).
 
@@ -480,10 +495,10 @@ Taxonomic assignment of the isolate, written from longest (species, subspecies [
 
 ### build_btyper3_anib_db.py
 
-* **Purpose:** download database(s) to be used for species and/or subspecies and/or pseudo-gene flow unit assignment (```--ani_species True``` and/or ```--ani_subspecies True``` and/or `--ani_geneflow True`); must be run before performing species and/or subspecies and/or pseudo-gene flow unit assignment
+* **Purpose:** download database(s) to be used for species and/or subspecies and/or pseudo-gene flow unit assignment and/or type strain comparison (```--ani_species True``` and/or ```--ani_subspecies True``` and/or `--ani_geneflow True` and/or `--ani_typestrains True`); must be run before performing species and/or subspecies and/or pseudo-gene flow unit assignment and/or type strain comparison
 
 ```
-usage: build_btyper3_ani_db.py -db [full, species-only, subspecies-only, geneflow-only]
+usage: build_btyper3_ani_db.py -db [full, species-only, subspecies-only, geneflow-only, typestrains-only]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -491,8 +506,9 @@ optional arguments:
                         Optional argument; Specify the ANI database to
                         download for use with FastANI (--ani_species True
                         and/or --ani_subspecies True and/or --ani_geneflow
-                        True options): full, species-only, subspecies-only,
-                        geneflow-only; full for 102M database with medoid
+                        True and/or --ani_typestrains True options): full,
+                        species-only, subspecies-only, geneflow-only,
+                        typestrains-only; full for 102M database with medoid
                         genomes of 18 Bacillus cereus group genomospecies,
                         plus 2 subspecies genomes (used with --ani_species
                         True and --ani_subspecies True); species-only for 91M
@@ -505,7 +521,10 @@ optional arguments:
                         False and --ani_subspecies True); geneflow-only for
                         the 198M database with 37 genomes (used for pseudo-
                         gene flow unit assignment with --ani_geneflow True);
-                        default = full
+                        typestrains-only for the 138M database with 26 genomes
+                        (used for ANI-based type strain comparison via
+                        --ani_typestrains True); default = full
+
 ```
 Users will then be prompted in the terminal to type "yes" and press ENTER to confirm the download.
 

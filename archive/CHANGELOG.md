@@ -2,6 +2,11 @@
 
 All noteable changes to BTyper3 will be documented in this file
 
+## [3.2.0] 2021-04-12
+### Added
+- Added `--ani_typestrains` option to `btyper3`, which allows users to compare a query *B. cereus* group genome to the type strain genomes of all published *B. cereus* group species in the literature; this options calculates ANI values between the query genome and the genomes of all published *B. cereus* group species type strains and reports the type strain that produces the highest ANI value. 
+- Added `typestrains-only` database to `build_btyper3_ani_db.py`, which allows users to download the type strain genomes of all published *B. cereus* group species; this database is used with the `--ani_typestrains` in `btyper3`. Type strain genomes correspond to the <a href="https://www.tandfonline.com/doi/full/10.1080/10408398.2021.1916735">species discussed in Figure 2 of our taxonomy review</a>, plus <a href="https://pubmed.ncbi.nlm.nih.gov/34494947/">three species</a> published after the review was published.
+
 ## [3.1.2] 2021-04-12
 ### Changed
 - Fixed an indentation typo in `download_pubmlst_latest.py` so that `xml` could properly parse the PubMLST xml

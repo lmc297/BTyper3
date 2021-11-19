@@ -15,8 +15,10 @@ def get_args(args):
 		ani_size = "102M"
 	elif ani_directory == "geneflow-only":
 		ani_size = "198M"
+	elif ani_directory == "typestrains-only":
+		ani_size = "138M"
 	else:
-		print(ani_directory + " does not exist. You must select one of full (102M), species-only (91M), subspecies-only (11M), or geneflow-only (198M).")
+		print(ani_directory + " does not exist. You must select one of full (102M), species-only (91M), subspecies-only (11M), geneflow-only (198M), or typestrains-only (138M).")
 		print("Exiting...")
 		sys.exit()
 	print("You specified the '" + ani_directory + "' ANI database. This database will take up " + ani_size + " of space on your computer. Do you want to continue? Type 'yes' and press ENTER to download the " + ani_directory + " database, or type any other key and press ENTER to exit without downloading the database.")
@@ -60,9 +62,9 @@ def download_genomes(btyper_path, genome_list, ani_directory):
 
 def main():
 
-	parser = argparse.ArgumentParser(usage = "build_btyper3_ani_db.py -db [full, species-only, subspecies-only, geneflow-only]")
+	parser = argparse.ArgumentParser(usage = "build_btyper3_ani_db.py -db [full, species-only, subspecies-only, geneflow-only, typestrains-only]")
 
-	parser.add_argument("-db", "--database", help = "Optional argument; Specify the ANI database to download for use with FastANI (--ani_species True and/or --ani_subspecies True and/or --ani_geneflow True options): full, species-only, subspecies-only, geneflow-only; full for 102M database with medoid genomes of 18 Bacillus cereus group genomospecies, plus 2 subspecies genomes (used with --ani_species True and --ani_subspecies True); species-only for 91M database with medoid genomes of 18 Bacillus cereus group genomospecies (subspecies genomes are not downloaded; used with --ani_species True and --ani_subspecies False); subspecies-only for 11M database with 2 subspecies genomes (genomospecies genomes are not downloaded; used with --ani_species False and --ani_subspecies True); geneflow-only for the 198M database with 37 genomes (used for pseudo-gene flow unit assignment with --ani_geneflow True); default = full", nargs = "?", default = "full")
+	parser.add_argument("-db", "--database", help = "Optional argument; Specify the ANI database to download for use with FastANI (--ani_species True and/or --ani_subspecies True and/or --ani_geneflow True and/or --ani_typestrains True options): full, species-only, subspecies-only, geneflow-only, typestrains-only; full for 102M database with medoid genomes of 18 Bacillus cereus group genomospecies, plus 2 subspecies genomes (used with --ani_species True and --ani_subspecies True); species-only for 91M database with medoid genomes of 18 Bacillus cereus group genomospecies (subspecies genomes are not downloaded; used with --ani_species True and --ani_subspecies False); subspecies-only for 11M database with 2 subspecies genomes (genomospecies genomes are not downloaded; used with --ani_species False and --ani_subspecies True); geneflow-only for the 198M database with 37 genomes (used for pseudo-gene flow unit assignment with --ani_geneflow True); typestrains-only for the 138M database with 26 genomes (used for ANI-based type strain comparison via --ani_typestrains True); default = full", nargs = "?", default = "full")
 	
 	btyper_path = get_btyper_path()
 
@@ -84,6 +86,9 @@ def main():
 	elif ani_directory == "geneflow-only":
 		genome_list = btyper_path + "seq_ani_db/geneflow/geneflow.txt"
 		download_genomes(btyper_path, genome_list, "geneflow")
+	elif ani_directory == "typestrains-only":
+		genome_list = btyper_path + "seq_ani_db/typestrains/typestrains.txt"
+		download_genomes(btyper_path, genome_list, "typestrains")
 
 if __name__ == "__main__":
         main()

@@ -54,6 +54,7 @@ def run_pipeline(args):
 	ani_species = args.ani_species
 	ani_subspecies = args.ani_subspecies
 	ani_geneflow = args.ani_geneflow
+	ani_typestrains = args.ani_typestrains
 	fastani_path = args.fastani_path
 	virulence = args.virulence
 	bt = args.bt
@@ -78,7 +79,7 @@ def run_pipeline(args):
 
 
 	# perform species and/or supspecies assignment
-	if ani_species == "True" or ani_subspecies == "True" or ani_geneflow == "True":
+	if ani_species == "True" or ani_subspecies == "True" or ani_geneflow == "True" or ani_typestrains == "True":
 
 		if ani_species == "True":
 
@@ -138,12 +139,31 @@ def run_pipeline(args):
 
 			final_geneflow = "(Pseudo-gene flow unit assignment not performed)"
 
+		if ani_typestrains == "True":
+
+			get_typestrains = Ani(
+				taxon = "typestrains",
+				fastani_path = fastani_path,
+				fasta = infile,
+				ani_references = btyper3_path + "seq_ani_db/typestrains/fastani_references_typestrains.txt",
+				final_results_directory = final_results_directory,
+				prefix = prefix)
+
+			logging.info("Using FastANI to compare " + prefix + " to B. cereus s.l. species type strain genomes at " + now.strftime("%Y-%m-%d %H:%M"))
+
+			final_typestrains = get_typestrains.run_fastani("typestrains", fastani_path, infile, btyper3_path + "seq_ani_db/typestrains/fastani_references_typestrains.txt", final_results_directory, prefix)
+			logging.info("Finished B. cereus s.l. species type strain comparison of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+
+		else:
+
+			final_typestrains = "(Type strain-based taxonomic assignment not performed)"
 
 	else:
 
 		final_species = "(Species assignment not performed)"
 		final_subspecies = "(Subspecies assignment not performed)"
 		final_geneflow = "(Pseudo-gene flow unit assignment not performed)"
+		final_typestrains = "(Type strain-based taxonomic assignment not performed)"
 
 
 
@@ -352,6 +372,7 @@ def run_pipeline(args):
 		species = final_species,
 		subspecies = final_subspecies,
 		geneflow = final_geneflow,
+		typestrains = final_typestrains,
 		anthracis = anthracis,
 		emetic = emetic,
 		nhe = nhe,
@@ -365,7 +386,7 @@ def run_pipeline(args):
 		mlst_final = mlst_final,
 		panC_final = panC_final)
 
-	get_final_results.print_final_results(final_results_directory, infile, prefix, final_species, final_subspecies, final_geneflow, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final)
+	get_final_results.print_final_results(final_results_directory, infile, prefix, final_species, final_subspecies, final_geneflow, final_typestrains, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final)
 
 	if os.path.isfile(infile + ".nsq"):
 		cmd = "rm {0}.nsq {0}.nin {0}.nhr".format(infile)
@@ -396,6 +417,8 @@ def main():
 
 	parser.add_argument("--ani_geneflow", help = "Optional argument; True or False; assign genome to a pseudo-gene flow unit using the method described by Carroll, et al. using FastANI; default = False", nargs = "?", default = "False")
 
+	parser.add_argument("--ani_typestrains", help = "Optional argument; True or False; calculate ANI values between the query genome relative to all B. cereus s.l. species type strain genomes using FastANI, and report the closest species type strain/highest ANI value; default = False", nargs = "?", default = "False")
+
 	parser.add_argument("--fastani_path", help = "Optional argument for use with --ani_species True and/or --ani_subspecies True and/or --ani_geneflow True; fastANI, unless path to fastANI executable is supplied; path to fastANI; default = fastANI <fastANI is in the user's path>", nargs = "?", default = "fastANI")
  
 	parser.add_argument("--virulence", help = "Optional argument; True or False; perform virulence gene detection (required if one wants to assign genomes to biovars Anthracis or Emeticus); default = True", nargs = "?", default = "True")
@@ -422,7 +445,7 @@ def main():
 
 	parser.add_argument("--download_mlst_latest", help = "Optional argument for use with --mlst True; True or False; download the latest version of the seven-gene multi-locus sequence typing (MLST) scheme available in PubMLST; if this is False, BTyper3 will search for the appropriate files in the seq_mlst_db directory; default = False", nargs = "?", default = "False")
 
-	parser.add_argument("--version", action="version", version='%(prog)s 3.1.2', help="Print version")
+	parser.add_argument("--version", action="version", version='%(prog)s 3.2.0', help="Print version")
 
 	args = parser.parse_args()
 
