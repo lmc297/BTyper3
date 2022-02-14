@@ -3,10 +3,10 @@
 import sys, os, argparse, datetime, logging, requests
 import xml.etree.ElementTree as ET
 from Bio import SeqIO
-from ani import Ani
-from blast import Blast
-from mlst import Mlst
-from print_final_results import FinalResults
+from .ani import Ani
+from .blast import Blast
+from .mlst import Mlst
+from .print_final_results import FinalResults
 
 
 def run_pipeline(args):
