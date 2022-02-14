@@ -35,11 +35,16 @@ class build_py(_build_py):
     def download(self, url, dest, append=False, decompress=False):
         print("downloading {!r} to {!r}".format(url, dest))
         self.mkpath(os.path.dirname(dest))
-        with urllib.request.urlopen(url) as req:
-            if decompress:
-                req = gzip.GzipFile(fileobj=req, mode="rb")
-            with open(dest, "ab" if append else "wb") as dst:
-                shutil.copyfileobj(req, dst)
+        try:
+            with urllib.request.urlopen(url) as req:
+                if decompress:
+                    req = gzip.GzipFile(fileobj=req, mode="rb")
+                with open(dest, "ab" if append else "wb") as dst:
+                    shutil.copyfileobj(req, dst)
+        except:
+            if os.path.exists(dest):
+                os.remove(dest)
+            raise
 
     def download_pubmlst(self, btyper3_path):
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
