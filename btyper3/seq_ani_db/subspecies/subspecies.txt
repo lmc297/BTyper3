@@ -1,0 +1,2 @@
+B_mosaicus_subsp_anthracis_Ames_GCF_000007845.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/007/845/GCF_000007845.1_ASM784v1/GCF_000007845.1_ASM784v1_genomic.fna.gz
+B_mosaicus_subsp_cereus_AH187_GCF_000021225.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/021/225/GCF_000021225.1_ASM2122v1/GCF_000021225.1_ASM2122v1_genomic.fna.gz

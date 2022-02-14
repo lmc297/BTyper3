@@ -1,0 +1,18 @@
+B_bingmayongensis_FJAT-13831_GCF_000299035.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/299/035/GCF_000299035.1_ASM29903v1/GCF_000299035.1_ASM29903v1_genomic.fna.gz
+B_gaemokensis_KCTC_13318_GCF_001590835.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/590/835/GCF_001590835.1_ASM159083v1/GCF_001590835.1_ASM159083v1_genomic.fna.gz
+B_manliponensis_JCM_15802_GCF_000712595.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/712/595/GCF_000712595.1_ASM71259v1/GCF_000712595.1_ASM71259v1_genomic.fna.gz
+B_toyonensis_BCT-7112_GCF_000496285.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/496/285/GCF_000496285.1_ASM49628v1/GCF_000496285.1_ASM49628v1_genomic.fna.gz
+B_mosaicus_PR02_GCF_001683155.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/001/683/155/GCF_001683155.1_ASM168315v1/GCF_001683155.1_ASM168315v1_genomic.fna.gz
+B_mycoides_AFS098983_GCF_002550135.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/550/135/GCF_002550135.1_ASM255013v1/GCF_002550135.1_ASM255013v1_genomic.fna.gz
+#B_UnknownSpecies14_AFS092566_GCF_002550855.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/550/855/GCF_002550855.1_ASM255085v1/GCF_002550855.1_ASM255085v1_genomic.fna.gz
+B_luti_AFS005615_GCF_002559215.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/559/215/GCF_002559215.1_ASM255921v1/GCF_002559215.1_ASM255921v1_genomic.fna.gz
+B_UnknownSpecies15_AFS028441_GCF_002559665.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/559/665/GCF_002559665.1_ASM255966v1/GCF_002559665.1_ASM255966v1_genomic.fna.gz
+B_cereus_AFS065770_GCF_002568015.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/568/015/GCF_002568015.1_ASM256801v1/GCF_002568015.1_ASM256801v1_genomic.fna.gz
+B_paramycoides_AFS046754_GCF_002576795.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/576/795/GCF_002576795.1_ASM257679v1/GCF_002576795.1_ASM257679v1_genomic.fna.gz
+B_UnknownSpecies16_AFS039342_GCF_002578045.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/578/045/GCF_002578045.1_ASM257804v1/GCF_002578045.1_ASM257804v1_genomic.fna.gz
+B_UnknownSpecies13_AFS030055_GCF_002583515.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/583/515/GCF_002583515.1_ASM258351v1/GCF_002583515.1_ASM258351v1_genomic.fna.gz
+B_UnknownSpecies17_AFS031783_GCF_002584535.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/584/535/GCF_002584535.1_ASM258453v1/GCF_002584535.1_ASM258453v1_genomic.fna.gz
+B_cytotoxicus_CH_39_GCF_002251005.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/251/005/GCF_002251005.2_ASM225100v2/GCF_002251005.2_ASM225100v2_genomic.fna.gz
+B_clarus_BHP_GCF_000746925.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/746/925/GCF_000746925.1_BHP_1/GCF_000746925.1_BHP_1_genomic.fna.gz
+B_UnknownSpecies18_GCF_002552625.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/002/552/625/GCA_002552625.1_ASM255262v1/GCA_002552625.1_ASM255262v1_genomic.fna.gz	# note that refseq has been suppressed: genome length too small
+B_pseudomycoides_AFS032210_GCF_002588885.fna	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/002/588/885/GCF_002588885.1_ASM258888v1/GCF_002588885.1_ASM258888v1_genomic.fna.gz
