@@ -18,7 +18,7 @@ For more information, check out the BTyper3 wiki at https://github.com/lmc297/BT
 
 For more information, check out the <a href="https://github.com/lmc297/BTyper3/wiki">BTyper3 wiki</a>
 
-### pip (macOS and Linux)
+### pip
 
 1. To run BTyper3, please download and install the following dependencies, if necessary:
   
