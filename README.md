@@ -18,6 +18,39 @@ For more information, check out the BTyper3 wiki at https://github.com/lmc297/BT
 
 For more information, check out the <a href="https://github.com/lmc297/BTyper3/wiki">BTyper3 wiki</a>
 
+### conda (recommended) 
+
+To create a conda environment named `btyper3` and install BTyper3 and all of its dependencies:
+
+1. Install <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html">conda</a>, if necessary
+
+2. Create a new environment named `btyper3` by running the following command from your terminal:
+
+```
+conda create -n btyper3
+```
+3. Activate your `btyper3` environment by running the following command from your terminal:
+
+```
+conda activate btyper3
+```
+4. Install <a href="https://anaconda.org/bioconda/btyper3">BTyper3</a> by running the following command from your terminal:
+
+```
+conda install -c bioconda btyper3
+```
+5. You can now run `btyper3`! Run the following command from your terminal to view all `btyper3` options, or <a href="https://github.com/lmc297/BTyper3/wiki">check the BTyper3 wiki</a> for details:
+
+```
+btyper3 --help
+```
+
+6. When you're done with BTyper3, you can deactivate the `btyper3` environment by running the following:
+
+```
+conda deactivate
+```
+
 ### pip
 
 1. To run BTyper3, please download and install the following dependencies, if necessary:
