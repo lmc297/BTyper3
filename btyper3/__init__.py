@@ -65,10 +65,10 @@ def run_pipeline(args):
 	vqthresh = int(args.virulence_coverage)
 	bpthresh = int(args.bt_identity)
 	bqthresh = int(args.bt_coverage)
-	overlap = float(args.bt_overlap)	
+	overlap = float(args.bt_overlap)
 	evalue = str(args.evalue)
 	download_mlst_latest = args.download_mlst_latest
-	
+
 	# log to file
 	now = datetime.datetime.now()
 	logging.info("Welcome to BTyper3!")
@@ -87,33 +87,28 @@ def run_pipeline(args):
 				taxon = "species",
 				fastani_path = fastani_path,
 				fasta = infile,
-				ani_references = btyper3_path + "seq_ani_db/species/fastani_references_species.txt",
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to assign " + prefix + " to a species at " + now.strftime("%Y-%m-%d %H:%M"))
-
-			final_species = get_species.run_fastani("species", fastani_path, infile, btyper3_path + "seq_ani_db/species/fastani_references_species.txt", final_results_directory, prefix)
-
+			final_species = get_species.run_fastani("species", fastani_path, infile, final_results_directory, prefix)
 			logging.info("Finished species assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 		else:
 
 			final_species = "(Species assignment not performed)"
-		
+
 		if ani_subspecies == "True":
 
 			get_subspecies = Ani(
 				taxon = "subspecies",
 				fastani_path = fastani_path,
 				fasta = infile,
-				ani_references = btyper3_path + "seq_ani_db/subspecies/fastani_references_subspecies.txt",
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to assign " + prefix + " to a subspecies (if applicable) at " + now.strftime("%Y-%m-%d %H:%M"))
-
-			final_subspecies = get_subspecies.run_fastani("subspecies", fastani_path, infile, btyper3_path + "seq_ani_db/subspecies/fastani_references_subspecies.txt", final_results_directory, prefix)
+			final_subspecies = get_subspecies.run_fastani("subspecies", fastani_path, infile, final_results_directory, prefix)
 			logging.info("Finished subspecies assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 		else:
@@ -126,13 +121,11 @@ def run_pipeline(args):
 				taxon = "geneflow",
 				fastani_path = fastani_path,
 				fasta = infile,
-				ani_references = btyper3_path + "seq_ani_db/geneflow/fastani_references_geneflow.txt",
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to assign " + prefix + " to a pseudo-gene flow unit at " + now.strftime("%Y-%m-%d %H:%M"))
-
-			final_geneflow = get_geneflow.run_fastani("geneflow", fastani_path, infile, btyper3_path + "seq_ani_db/geneflow/fastani_references_geneflow.txt", final_results_directory, prefix)
+			final_geneflow = get_geneflow.run_fastani("geneflow", fastani_path, infile, final_results_directory, prefix)
 			logging.info("Finished pseudo-gene flow unit assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 		else:
@@ -145,13 +138,11 @@ def run_pipeline(args):
 				taxon = "typestrains",
 				fastani_path = fastani_path,
 				fasta = infile,
-				ani_references = btyper3_path + "seq_ani_db/typestrains/fastani_references_typestrains.txt",
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to compare " + prefix + " to B. cereus s.l. species type strain genomes at " + now.strftime("%Y-%m-%d %H:%M"))
-
-			final_typestrains = get_typestrains.run_fastani("typestrains", fastani_path, infile, btyper3_path + "seq_ani_db/typestrains/fastani_references_typestrains.txt", final_results_directory, prefix)
+			final_typestrains = get_typestrains.run_fastani("typestrains", fastani_path, infile, final_results_directory, prefix)
 			logging.info("Finished B. cereus s.l. species type strain comparison of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 		else:
@@ -193,7 +184,7 @@ def run_pipeline(args):
 			evalue = evalue)
 
 		logging.info("Using " + vdb_task + " to identify potential virulence factors in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
-		
+
 		vir = get_virulence.run_blast(vdb_task, infile, vdb_path, final_results_directory, prefix, "virulence", evalue)
 		anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps = get_virulence.parse_virulence(vir, vpthresh, vqthresh)
 
@@ -203,7 +194,7 @@ def run_pipeline(args):
 	else:
 
 		anthracis = "(Virulence factor detection not performed)"
-		emetic = "(Virulence factor detection not performed)" 
+		emetic = "(Virulence factor detection not performed)"
 		nhe = "(Virulence factor detection not performed)"
 		hbl = "(Virulence factor detection not performed)"
 		cytK = "(Virulence factor detection not performed)"
@@ -213,7 +204,7 @@ def run_pipeline(args):
 		bps = "(Virulence factor detection not performed)"
 
 
-	
+
 	# perform Thuringiensis biovar assignment
 	if bt == "True":
 
@@ -230,7 +221,7 @@ def run_pipeline(args):
 			evalue = evalue)
 
 		logging.info("Using tblastn to identify potential Bt genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
-		
+
 		bt_results = get_bt.run_blast("tblastn", infile, btyper3_path + "seq_bt_db/btyper3_bt_sequences.faa", final_results_directory, prefix, "bt", evalue)
 		bt_final = get_bt.parse_bt(bt_results, bpthresh, bqthresh, overlap)
 
@@ -239,17 +230,17 @@ def run_pipeline(args):
 
 	else:
 
-		bt_final = "(Bt toxin gene detection not performed)"	
+		bt_final = "(Bt toxin gene detection not performed)"
 
-	
 
-	
+
+
 	# perform multi-locus sequence typing (MLST) using PubMLST's seven-gene scheme for Bacillus cereus
 	if mlst == "True":
 
 		if download_mlst_latest == "True":
 
-			
+
 			logging.info("Downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
 
 			url = "https://pubmlst.org/data/dbases.xml"
@@ -268,7 +259,7 @@ def run_pipeline(args):
 			urlcol = species["Bacillus cereus"]
 
 			for u in urlcol:
-				
+
 				if "alleles_fasta" in u:
 					fname = u.split("/")[-2].strip()
 					resp = requests.get(u)
@@ -281,7 +272,7 @@ def run_pipeline(args):
 					with open(btyper3_path + "seq_mlst_db/" + fname, "wb") as outfile:
 						outfile.write(resp.content)
 
-			
+
 			logging.info("Finished downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
 
 
@@ -298,7 +289,7 @@ def run_pipeline(args):
 				logging.info("PubMLST profile file named " + btyper3_path + "seq_mlst_db/bcereus.txt does not exist. Please use '--download_mlst_latest True' to download the latest version of PubMLST's Bacillus cereus database.")
 				logging.info("Exiting BTyper3 with error at " + now.strftime("%Y-%m-%d %H:%M"))
 				sys.exit()
-			
+
 
 		get_mlst = Blast(
 			task = "blastn",
@@ -313,9 +304,9 @@ def run_pipeline(args):
 			evalue = evalue)
 
 		logging.info("Using blastn to identify potential seven-gene MLST genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
-		
+
 		mlst_results = get_mlst.run_blast("blastn", infile, btyper3_path + "seq_mlst_db/mlst.fas", final_results_directory, prefix, "mlst", evalue)
-		mlst_alleles, perfect_matches = get_mlst.parse_mlst(mlst_results)	
+		mlst_alleles, perfect_matches = get_mlst.parse_mlst(mlst_results)
 
 		logging.info("Finished seven-gene MLST gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
@@ -325,9 +316,9 @@ def run_pipeline(args):
 			perfect_matches = perfect_matches,
 			final_results_directory = final_results_directory,
 			prefix = prefix)
-			
 
-		mlst_final = get_st.at2st(mlst_alleles, btyper3_path + "seq_mlst_db/bcereus.txt", perfect_matches, final_results_directory, prefix)	
+
+		mlst_final = get_st.at2st(mlst_alleles, btyper3_path + "seq_mlst_db/bcereus.txt", perfect_matches, final_results_directory, prefix)
 
 
 	else:
@@ -338,7 +329,7 @@ def run_pipeline(args):
 
 	# perform panC phylogenetic group assignment using the adjusted, eight-group panC group assignment scheme
 	if panC == "True":
-	
+
 		get_panC = Blast(
 			task = "blastn",
 			dbseqs = infile,
@@ -352,9 +343,9 @@ def run_pipeline(args):
 			evalue = evalue)
 
 		logging.info("Using blastn to identify panC in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
-		
+
 		panC_results = get_panC.run_blast("blastn", infile, btyper3_path + "seq_panC_db/panC.fna", final_results_directory, prefix, "panC", evalue)
-		panC_final = get_panC.parse_panC(panC_results)	
+		panC_final = get_panC.parse_panC(panC_results)
 		logging.info("Finished panC gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 
@@ -362,7 +353,7 @@ def run_pipeline(args):
 
 		panC_final = "(panC group assignment not performed)"
 
-			
+
 
 	# print results to a final results file
 	get_final_results = FinalResults(
@@ -390,7 +381,7 @@ def run_pipeline(args):
 
 	if os.path.isfile(infile + ".nsq"):
 		cmd = "rm {0}.nsq {0}.nin {0}.nhr".format(infile)
-		os.system(cmd)	
+		os.system(cmd)
 
 	logging.info("")
 	logging.info("")
@@ -420,7 +411,7 @@ def main():
 	parser.add_argument("--ani_typestrains", help = "Optional argument; True or False; calculate ANI values between the query genome relative to all B. cereus s.l. species type strain genomes using FastANI, and report the closest species type strain/highest ANI value; default = False", nargs = "?", default = "False")
 
 	parser.add_argument("--fastani_path", help = "Optional argument for use with --ani_species True and/or --ani_subspecies True and/or --ani_geneflow True; fastANI, unless path to fastANI executable is supplied; path to fastANI; default = fastANI <fastANI is in the user's path>", nargs = "?", default = "fastANI")
- 
+
 	parser.add_argument("--virulence", help = "Optional argument; True or False; perform virulence gene detection (required if one wants to assign genomes to biovars Anthracis or Emeticus); default = True", nargs = "?", default = "True")
 
 	parser.add_argument("--bt", help = "Optional argument; True or False; perform Bt toxin gene detection for cry, cyt, and vip genes (required if one wants to assign genomes to biovar Thuringiensis); default = True", nargs = "?", default = "True")

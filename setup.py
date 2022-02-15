@@ -78,13 +78,9 @@ class build_py(_build_py):
                 if line.startswith("#"):
                     continue
                 gname, gpath = map(str.strip, line.split()[:2])
-                gfolder = os.path.join(btyper3_path, "seq_ani_db", ani_directory)
-                gfile = os.path.join(gfolder, gname)
-                refs = os.path.join(gfolder, "fastani_references_{}.txt".format(ani_directory))
+                gfile = os.path.join(btyper3_path, "seq_ani_db", ani_directory, name)
                 if not os.path.isfile(gfile):
                     self.download(url=gpath, dest=gfile, decompress=True)
-                    with open(refs, "a") as dst:
-                        dst.write("{}\n".format(gfile))
 
 
 setuptools.setup(cmdclass={"build_py": build_py})
