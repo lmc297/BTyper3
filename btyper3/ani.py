@@ -44,12 +44,16 @@ class Ani:
 		# for each of them than can be passed to `fastANI`.
 		with contextlib.ExitStack() as ctx:
 			# create a temporary file to list the reference genomes
-			ref_file = ctx.enter_context(tempfile.NamedTemporaryFile(suffix="txt", mode="w", buffering=1))
-			# extract all the reference genomes
+			ref_file = ctx.enter_context(tempfile.NamedTemporaryFile(suffix="txt", mode="w"))
+			# extract the list of reference genomes
 			data_module = "btyper3.seq_ani_db.{}".format(taxon)
-			for fna_name in importlib.resources.contents(data_module):
-				fna_path = ctx.enter_context(importlib.resources.path(data_module, fna_name))
+			with importlib.resources.open_text(data_module, "{}.txt".format(taxon)) as list:
+				genomes = [line.split()[0] for line in list if line.strip() and not line.startswith("#")]
+			# extract all the reference genomes
+			for genome in genomes:
+				fna_path = ctx.enter_context(importlib.resources.path(data_module, genome))
 				ref_file.write("{}\n".format(fna_path))
+			ref_file.flush()
 			# run fastANI
 			fastani_results = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
 			proc = subprocess.run([fastani_path, "-q", fasta, "--rl", ref_file.name, "-o", fastani_results])
