@@ -81,9 +81,9 @@ def run_pipeline(args):
 	download_mlst_latest = args.download_mlst_latest
 
 	# log to file
-	now = datetime.datetime.now()
+	now = datetime.datetime.now
 	logging.info("Welcome to BTyper3!")
-	logging.info("You are initializing this run at " + now.strftime("%Y-%m-%d %H:%M"))
+	logging.info("You are initializing this run at " + now().strftime("%Y-%m-%d %H:%M"))
 	logging.info("You ran the following command: ")
 	logging.info(" ".join([str(sa) for sa in sys.argv]))
 	logging.info("Report bugs/concerns to Laura M. Carroll, laura.carroll@embl.de")
@@ -101,9 +101,9 @@ def run_pipeline(args):
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
-			logging.info("Using FastANI to assign " + prefix + " to a species at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using FastANI to assign " + prefix + " to a species at " + now().strftime("%Y-%m-%d %H:%M"))
 			final_species = get_species.run_fastani("species", fastani_path, infile, final_results_directory, prefix)
-			logging.info("Finished species assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished species assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
 
@@ -118,9 +118,9 @@ def run_pipeline(args):
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
-			logging.info("Using FastANI to assign " + prefix + " to a subspecies (if applicable) at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using FastANI to assign " + prefix + " to a subspecies (if applicable) at " + now().strftime("%Y-%m-%d %H:%M"))
 			final_subspecies = get_subspecies.run_fastani("subspecies", fastani_path, infile, final_results_directory, prefix)
-			logging.info("Finished subspecies assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished subspecies assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
 
@@ -135,9 +135,9 @@ def run_pipeline(args):
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
-			logging.info("Using FastANI to assign " + prefix + " to a pseudo-gene flow unit at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using FastANI to assign " + prefix + " to a pseudo-gene flow unit at " + now().strftime("%Y-%m-%d %H:%M"))
 			final_geneflow = get_geneflow.run_fastani("geneflow", fastani_path, infile, final_results_directory, prefix)
-			logging.info("Finished pseudo-gene flow unit assignment of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished pseudo-gene flow unit assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
 
@@ -152,9 +152,9 @@ def run_pipeline(args):
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
-			logging.info("Using FastANI to compare " + prefix + " to B. cereus s.l. species type strain genomes at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using FastANI to compare " + prefix + " to B. cereus s.l. species type strain genomes at " + now().strftime("%Y-%m-%d %H:%M"))
 			final_typestrains = get_typestrains.run_fastani("typestrains", fastani_path, infile, final_results_directory, prefix)
-			logging.info("Finished B. cereus s.l. species type strain comparison of " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished B. cereus s.l. species type strain comparison of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
 
@@ -195,12 +195,12 @@ def run_pipeline(args):
 				overlap = overlap,
 				evalue = evalue)
 
-			logging.info("Using " + vdb_task + " to identify potential virulence factors in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using " + vdb_task + " to identify potential virulence factors in " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 			vir = get_virulence.run_blast(vdb_task, infile, vdb_path, final_results_directory, prefix, "virulence", evalue)
 			anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps = get_virulence.parse_virulence(vir, vpthresh, vqthresh)
 
-			logging.info("Finished virulence factor detection in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished virulence factor detection in " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 
 	else:
@@ -234,12 +234,12 @@ def run_pipeline(args):
 				overlap = overlap,
 				evalue = evalue)
 
-			logging.info("Using tblastn to identify potential Bt genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using tblastn to identify potential Bt genes in " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 			bt_results = get_bt.run_blast("tblastn", infile, bt_path, final_results_directory, prefix, "bt", evalue)
 			bt_final = get_bt.parse_bt(bt_results, bpthresh, bqthresh, overlap)
 
-			logging.info("Finished Bt toxin gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished Bt toxin gene detection for " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 
 	else:
@@ -256,7 +256,7 @@ def run_pipeline(args):
 
 			if download_mlst_latest == "True":
 
-				logging.info("Downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
+				logging.info("Downloading most recent PubMLST datbase at " + now().strftime("%Y-%m-%d %H:%M"))
 				with urllib.request.urlopen("https://pubmlst.org/data/dbases.xml") as req:
 					tree = etree.parse(req)
 					parent = next(e for e in tree.iter("species") if e.text.strip() == "Bacillus cereus")
@@ -275,7 +275,7 @@ def run_pipeline(args):
 						with urllib.request.urlopen(url) as req:
 							shutil.copyfileobj(req, bcereus_file)
 
-				logging.info("Finished downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
+				logging.info("Finished downloading most recent PubMLST datbase at " + now().strftime("%Y-%m-%d %H:%M"))
 
 			else:
 
@@ -298,12 +298,12 @@ def run_pipeline(args):
 				overlap = overlap,
 				evalue = evalue)
 
-			logging.info("Using blastn to identify potential seven-gene MLST genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using blastn to identify potential seven-gene MLST genes in " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 			mlst_results = get_mlst.run_blast("blastn", infile, mlst_path, final_results_directory, prefix, "mlst", evalue)
 			mlst_alleles, perfect_matches = get_mlst.parse_mlst(mlst_results)
 
-			logging.info("Finished seven-gene MLST gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished seven-gene MLST gene detection for " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 			get_st = Mlst(
 				alleles = mlst_alleles,
@@ -339,11 +339,11 @@ def run_pipeline(args):
 				overlap = overlap,
 				evalue = evalue)
 
-			logging.info("Using blastn to identify panC in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using blastn to identify panC in " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 			panC_results = get_panC.run_blast("blastn", infile, panC_path, final_results_directory, prefix, "panC", evalue)
 			panC_final = get_panC.parse_panC(panC_results)
-			logging.info("Finished panC gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Finished panC gene detection for " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 
 	else:
@@ -384,7 +384,7 @@ def run_pipeline(args):
 	logging.info("")
 	logging.info("")
 	logging.info("")
-	logging.info("BTyper3 finished at " + now.strftime("%Y-%m-%d %H:%M"))
+	logging.info("BTyper3 finished at " + now().strftime("%Y-%m-%d %H:%M"))
 	logging.info("Report bugs/concerns to Laura M. Carroll, laura.carroll@embl.de\n")
 	logging.info("Have a nice day!")
 
