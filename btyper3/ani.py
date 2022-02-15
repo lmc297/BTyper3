@@ -1,4 +1,9 @@
 import os
+import contextlib
+import importlib.resources
+import subprocess
+import tempfile
+
 import pandas as pd
 import numpy as np
 from pandas.errors import EmptyDataError
@@ -13,46 +18,51 @@ class Ani:
 		taxon = "species", "subspecies", or "geneflow"; corresponds to directory of genomes to use
 		fastani_path = path to fastANI executable
 		fasta = query genome for fastANI
-		ani_references = list of reference genomes for fastANI
 		final_results_directory = path to BTyper3 final results directory
 		prefix = genome prefix to use for output files
 	output:
 		species or subspecies producing highest ANI value
-	
+
 	"""
 
-	def __init__(self, taxon, fastani_path, fasta, ani_references, final_results_directory, prefix):
+	def __init__(self, taxon, fastani_path, fasta, final_results_directory, prefix):
 
 		self.taxon = taxon
 		self.fastani_path = fastani_path
 		self.fasta = fasta
-		self.ani_references = ani_references
 		self.final_results_directory = final_results_directory
 		self.prefix = prefix
 
-	def run_fastani(self, taxon, fastani_path, fasta, ani_references, final_results_directory, prefix):
+	def run_fastani(self, taxon, fastani_path, fasta, final_results_directory, prefix):
+		# create output folder if it doesn't exist
+		ani_results_dir = os.path.join(final_results_directory, taxon)
+		os.makedirs(ani_results_dir, exist_ok=True)
 
-		if taxon == "species":
-			ani_results_dir = final_results_directory + "species"
-		elif taxon == "subspecies":
-			ani_results_dir = final_results_directory + "subspecies"
-		elif taxon == "geneflow":
-			ani_results_dir = final_results_directory + "geneflow"
-		elif taxon == "typestrains":
-			ani_results_dir = final_results_directory + "typestrains"
-		if not os.path.isdir(ani_results_dir):
-			os.mkdir(ani_results_dir)
-
-		cmd = "{0} -q {1} --rl {2} -o {3}".format(fastani_path, fasta, ani_references, ani_results_dir + "/" + prefix + "_" + taxon + "_fastani.txt") 
-		os.system(cmd)
+		# get the ANI database using `importlib.resources`: note that since
+		# files may not be available on the local filesystem (e.g. they could
+		# be zipped), we use `importlib.resources.path` to get a system path
+		# for each of them than can be passed to `fastANI`.
+		with contextlib.ExitStack() as ctx:
+			# create a temporary file to list the reference genomes
+			ref_file = ctx.enter_context(tempfile.NamedTemporaryFile(suffix="txt", mode="w", buffering=1))
+			# extract all the reference genomes
+			data_module = "btyper3.seq_ani_db.{}".format(taxon)
+			for fna_name in importlib.resources.contents(data_module):
+				fna_path = ctx.enter_context(importlib.resources.path(data_module, fna_name))
+				ref_file.write("{}\n".format(fna_path))
+			# run fastANI
+			fastani_results = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
+			proc = subprocess.run([fastani_path, "-q", fasta, "--rl", ref_file.name, "-o", fastani_results])
+			proc.check_returncode()
 
 		try:
-			ani_results_file = pd.read_csv(ani_results_dir + "/" + prefix + "_" + taxon + "_fastani.txt", sep = "\s+", header = None)
-			ani_results_file = ani_results_file.sort_values(by = [2], ascending = False)
-			maxtax = ani_results_file.iloc[0,1]	
+			# extract results into a `pandas.DataFrame` object
+			ani_results_file = pd.read_csv(fastani_results, sep = "\s+", header = None)
+			ani_results_file.sort_values(by = [2], ascending = False, inplace = True)
+			maxtax = ani_results_file.iloc[0,1]
 			maxtax = maxtax.split("/")[-1].strip()
 			maxani = ani_results_file.iloc[0,2]
-		
+
 			if taxon == "species":
 				species = maxtax.split("_")[1].strip()
 				if species == "cereus":
@@ -81,7 +91,7 @@ class Ani:
 					found_alternate = 0
 					test_top5 = [1, 2, 3, 4]
 					for tt in test_top5:
-						testtax = ani_results_file.iloc[tt,1]	
+						testtax = ani_results_file.iloc[tt,1]
 						testtax = testtax.split("/")[-1].strip()
 						testani = ani_results_file.iloc[tt,2]
 						test_minani = testtax.split("_")[3].strip()
@@ -113,6 +123,3 @@ class Ani:
 			elif taxon == "typestrains":
 				final_typestrains = "(Type strain unknown)"
 				return(final_typestrains)
-				
-
-

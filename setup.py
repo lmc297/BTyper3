@@ -47,30 +47,22 @@ class build_py(_build_py):
             raise
 
     def download_pubmlst(self, btyper3_path):
+        # write a timestamp to know when the DB was built in future runs
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         print("downloading most recent PubMLST database at {}".format(now))
+        with open(os.path.join(btyper3_path, "seq_mlst_db", "timestamp.txt"), "w") as f:
+            f.write("{}\n".format(now))
 
-        xml_path = os.path.join(btyper3_path, "seq_mlst_db", "pubmlst.xml")
-        self.download("https://pubmlst.org/data/dbases.xml", xml_path)
+        with urllib.request.urlopen("https://pubmlst.org/data/dbases.xml") as req:
+            tree = etree.parse(req)
+            parent = next(e for e in tree.iter("species") if e.text.strip() == "Bacillus cereus")
+            urls = (e.text for e in parent.iter("url"))
 
-        tree = etree.parse(xml_path)
-        species = collections.defaultdict(list)
-        for parent in tree.iter("species"):
-            for child in parent.iter("url"):
-                species[parent.text.strip()].append(child.text)
-
-        for url in species["Bacillus cereus"]:
+        for url in urls:
             if "alleles_fasta" in url:
-                self.download(
-                    url=url,
-                    dest=os.path.join(btyper3_path, "seq_mlst_db", "mlst.fast"),
-                    append=True,
-                )
+                self.download(url, os.path.join(btyper3_path, "seq_mlst_db", "mlst.fas"), append=True)
             elif "profiles_csv" in url:
-                self.download(
-                    url=url,
-                    dest=os.path.join(btyper3_path, "seq_mlst_db", "bcereus.txt"),
-                )
+                self.download(url, os.path.join(btyper3_path, "seq_mlst_db", "bcereus.txt"))
 
     def download_genomes(self, btyper3_path, genome_list, ani_directory):
         with open(genome_list) as genomes:
@@ -78,13 +70,9 @@ class build_py(_build_py):
                 if line.startswith("#"):
                     continue
                 gname, gpath = map(str.strip, line.split()[:2])
-                gfolder = os.path.join(btyper3_path, "seq_ani_db", ani_directory)
-                gfile = os.path.join(gfolder, gname)
-                refs = os.path.join(gfolder, "fastani_references_{}.txt".format(ani_directory))
+                gfile = os.path.join(btyper3_path, "seq_ani_db", ani_directory, gname)
                 if not os.path.isfile(gfile):
                     self.download(url=gpath, dest=gfile, decompress=True)
-                    with open(refs, "a") as dst:
-                        dst.write("{}\n".format(gfile))
 
 
 setuptools.setup(cmdclass={"build_py": build_py})
