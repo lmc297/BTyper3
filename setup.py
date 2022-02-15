@@ -47,18 +47,24 @@ class build_py(_build_py):
             raise
 
     def download_pubmlst(self, btyper3_path):
+        # write a timestamp to know when the DB was built in future runs
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         print("downloading most recent PubMLST database at {}".format(now))
+        with open(os.path.join(btyper3_path, "seq_mlst_db", "timestamp.txt"), "w") as f:
+            f.write("{}\n".format(now))
 
+        # download XML listing
         xml_path = os.path.join(btyper3_path, "seq_mlst_db", "pubmlst.xml")
         self.download("https://pubmlst.org/data/dbases.xml", xml_path)
 
+        # extract B. cereus files from the XML listing
         tree = etree.parse(xml_path)
         species = collections.defaultdict(list)
         for parent in tree.iter("species"):
             for child in parent.iter("url"):
                 species[parent.text.strip()].append(child.text)
 
+        # download B. cereus files
         for url in species["Bacillus cereus"]:
             if "alleles_fasta" in url:
                 self.download(
