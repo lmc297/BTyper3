@@ -1,4 +1,6 @@
 import os
+import subprocess
+
 import pandas as pd
 from pandas.errors import EmptyDataError
 
@@ -69,18 +71,30 @@ class Blast:
 		self.evalue = evalue
 
 	def run_blast(self, task, dbseqs, fasta, final_results_directory, prefix, suffix, evalue):
+		# create output folder if it doesn't exist
+		blast_results_dir = os.path.join(final_results_directory, suffix)
+		os.makedirs(blast_results_dir, exist_ok=True)
 
-		blast_results_dir = final_results_directory + suffix
-		if not os.path.isdir(blast_results_dir):
-			os.mkdir(blast_results_dir)
-
+		# build a BLAST database if it doesn't exist yet
 		if not os.path.exists(dbseqs + ".nsq"):
-			os.system("makeblastdb -in " + dbseqs + " -dbtype nucl")
-	
-		cmd = '{3} -query {0} -db {1} -out {2} -max_target_seqs 1000000000 -evalue {4} -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen qcovs qcovhsp"'.format(fasta, dbseqs, blast_results_dir + "/" + prefix + "_" + suffix + ".txt", task, evalue) # genome as query and mlst db as db	
-		os.system(cmd)
+			proc = subprocess.run(["makeblastdb", "-in", dbseqs, "-dbtype", "nucl"])
+			proc.check_returncode()
 
-		return(blast_results_dir + "/" + prefix + "_" + suffix + ".txt")
+		# run the BLAST task
+		blast_results = os.path.join(blast_results_dir, "{}_{}.txt".format(prefix, suffix))
+		proc = subprocess.run([
+			task,
+			"-query", fasta,
+			"-db", dbseqs,
+			"-out", blast_results,
+			"-max_target_seqs", "1000000000",
+			"-evalue", evalue,
+			"-outfmt", "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen qcovs qcovhsp",
+		])
+		proc.check_returncode()
+
+		# return path to results
+		return blast_results
 
 	def parse_virulence(self, virfile, pthresh, qthresh):
 
@@ -106,7 +120,7 @@ class Blast:
 				gene_subset = gene_subset.sort_values(by = [11], ascending = False)
 				max_gene = gene_subset.iloc[0,0]
 				pid = float(gene_subset.iloc[0,2])
-				qid = float(gene_subset.iloc[0,14])	
+				qid = float(gene_subset.iloc[0,14])
 				#qid = 100*(float(gene_subset.iloc[0,3])/float(gene_subset.iloc[0,12])) # original BTyper query coverage value; genome as db and mlst db as query
 				if pid >= pthresh and qid >= qthresh:
 					if max_gene == "cesA" or max_gene == "cesB" or max_gene == "cesC" or max_gene == "cesD":
@@ -142,12 +156,12 @@ class Blast:
 			sph = []
 			cap = []
 			has = []
-			bps = []	
+			bps = []
 
-		return(anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps)				
+		return(anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps)
 
 
-	
+
 	def parse_bt(self, btfile, pthresh, qthresh, overlap):
 
 		try:
@@ -155,7 +169,7 @@ class Blast:
 			blast_results_file = pd.read_csv(btfile, sep = "\s+", header = None)
 			blast_results_file = blast_results_file.sort_values(by = [0], ascending = True) # genome as query and mlst db as db
 			genes = blast_results_file.iloc[:,0] # genome as db and mlst db as query
-	
+
 			rangedict = {}
 			bitdict = {}
 			genes = genes.unique()
@@ -164,7 +178,7 @@ class Blast:
 				gene_subset = gene_subset.sort_values(by = [11], ascending = False)
 				max_gene = gene_subset.iloc[0,0]
 				pid = float(gene_subset.iloc[0,2])
-				qid = float(gene_subset.iloc[0,14])	
+				qid = float(gene_subset.iloc[0,14])
 				#qid = 100*(float(gene_subset.iloc[0,3])/float(gene_subset.iloc[0,12])) # original BTyper query coverage value; genome as db and mlst db as query
 				glen = float(gene_subset.iloc[0,3])
 				gstart = int(gene_subset.iloc[0,8])
@@ -176,12 +190,12 @@ class Blast:
 				if pid >= pthresh and qid >= qthresh:
 					rangedict[max_gene] = grange
 					bitdict[max_gene] = float(gene_subset.iloc[0,11])
-		
+
 
 			bt = []
 			#comparisons = []
 			for key, val in rangedict.items():
-				overlap_dict = {}	
+				overlap_dict = {}
 				test_bits = bitdict[key]
 				grange = val
 				for key2, val2 in rangedict.items():
@@ -194,7 +208,7 @@ class Blast:
 							if key not in overlap_dict.keys():
 								overlap_dict[key] = test_bits
 							overlap_dict[key2] = og_bits
-				if len(overlap_dict.keys()) > 0:	
+				if len(overlap_dict.keys()) > 0:
 					maxbits = 0
 					max_gene = []
 					for okey in overlap_dict.keys():
@@ -215,22 +229,22 @@ class Blast:
 					bt.append(max_gene)
 
 		except EmptyDataError:
-			bt = []	
-		return(sorted(bt))			
+			bt = []
+		return(sorted(bt))
 
 
 	def parse_mlst(self, mlstfile):
 
 		try:
-			
+
 			blast_results_file = pd.read_csv(mlstfile, sep = "\s+", header = None)
 			blast_results_file = blast_results_file.sort_values(by = [0], ascending = True) # genome as query and mlst db as db
 			genes = blast_results_file.iloc[:,0] # genome as db and mlst db as query
 
 			mlst = []
-			perfect_matches = 0		
+			perfect_matches = 0
 
-			genes = genes.str.split("_",expand=True) 
+			genes = genes.str.split("_",expand=True)
 			genes = genes.iloc[:,0]
 			genes = genes.unique()
 			for gene in genes:
@@ -242,7 +256,7 @@ class Blast:
 				if pid == 100.0 and qid == 100.0:
 					perfect_matches += 1
 				max_genes = gene_subset[gene_subset[11]==max_bits]
-				max_genes = max_genes.iloc[:,0]	
+				max_genes = max_genes.iloc[:,0]
 				mlst.append([mg.split("_")[-1].strip() for mg in set(max_genes)])
 
 		except EmptyDataError:
@@ -253,11 +267,11 @@ class Blast:
 
 
 
-	
+
 	def parse_panC(self, panCfile):
 
 		try:
-			
+
 			blast_results_file = pd.read_csv(panCfile, sep = "\s+", header = None)
 			blast_results_file = blast_results_file.sort_values(by = [11], ascending = False)
 			max_bits = blast_results_file.iloc[0,11]
