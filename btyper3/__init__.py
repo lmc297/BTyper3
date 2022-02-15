@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 
-import sys, os, argparse, datetime, logging, requests
-import xml.etree.ElementTree as ET
+import argparse
+import contextlib
+import datetime
+import importlib.resources
+import logging
+import os
+import sys
+import shutil
+import tempfile
+import urllib.request
+import xml.etree.ElementTree as etree
+
 from Bio import SeqIO
+
 from .ani import Ani
 from .blast import Blast
 from .mlst import Mlst
@@ -161,34 +172,35 @@ def run_pipeline(args):
 	# perform virulence-associated biovar assignment
 	if virulence == "True":
 
-		vdb_path = btyper3_path + "seq_virulence_db/btyper3_virulence_sequences"
-
 		if vdb == "aa":
-			vdb_path = vdb_path + ".faa"
+			vdb_name = "btyper3_virulence_sequences.faa"
 			vdb_task = "tblastn"
 
 		elif vdb == "nuc":
-			vdb_path = vdb_path + ".ffn"
+			vdb_name = "btyper3_virulence_sequences.ffn"
 			vdb_task = "blastn"
 
-		get_virulence = Blast(
-			task = vdb_task,
-			dbseqs = infile,
-			fasta = vdb_path,
-			final_results_directory = final_results_directory,
-			prefix = prefix,
-			suffix = "virulence",
-			pthresh = vpthresh,
-			qthresh = vqthresh,
-			overlap = overlap,
-			evalue = evalue)
 
-		logging.info("Using " + vdb_task + " to identify potential virulence factors in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+		with importlib.resources.path("btyper3.seq_virulence_db", vdb_name) as vdb_path:
 
-		vir = get_virulence.run_blast(vdb_task, infile, vdb_path, final_results_directory, prefix, "virulence", evalue)
-		anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps = get_virulence.parse_virulence(vir, vpthresh, vqthresh)
+			get_virulence = Blast(
+				task = vdb_task,
+				dbseqs = infile,
+				fasta = vdb_path,
+				final_results_directory = final_results_directory,
+				prefix = prefix,
+				suffix = "virulence",
+				pthresh = vpthresh,
+				qthresh = vqthresh,
+				overlap = overlap,
+				evalue = evalue)
 
-		logging.info("Finished virulence factor detection in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using " + vdb_task + " to identify potential virulence factors in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+
+			vir = get_virulence.run_blast(vdb_task, infile, vdb_path, final_results_directory, prefix, "virulence", evalue)
+			anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps = get_virulence.parse_virulence(vir, vpthresh, vqthresh)
+
+			logging.info("Finished virulence factor detection in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 
 	else:
@@ -208,24 +220,26 @@ def run_pipeline(args):
 	# perform Thuringiensis biovar assignment
 	if bt == "True":
 
-		get_bt = Blast(
-			task = "tblastn",
-			dbseqs = infile,
-			fasta = btyper3_path + "seq_bt_db/btyper3_bt_sequences.faa",
-			final_results_directory = final_results_directory,
-			prefix = prefix,
-			suffix = "bt",
-			pthresh = bpthresh,
-			qthresh = bqthresh,
-			overlap = overlap,
-			evalue = evalue)
+		with importlib.resources.path("btyper3.seq_bt_db", "btyper3_bt_sequences.faa") as bt_path:
 
-		logging.info("Using tblastn to identify potential Bt genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			get_bt = Blast(
+				task = "tblastn",
+				dbseqs = infile,
+				fasta = bt_path,
+				final_results_directory = final_results_directory,
+				prefix = prefix,
+				suffix = "bt",
+				pthresh = bpthresh,
+				qthresh = bqthresh,
+				overlap = overlap,
+				evalue = evalue)
 
-		bt_results = get_bt.run_blast("tblastn", infile, btyper3_path + "seq_bt_db/btyper3_bt_sequences.faa", final_results_directory, prefix, "bt", evalue)
-		bt_final = get_bt.parse_bt(bt_results, bpthresh, bqthresh, overlap)
+			logging.info("Using tblastn to identify potential Bt genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
-		logging.info("Finished Bt toxin gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			bt_results = get_bt.run_blast("tblastn", infile, bt_path, final_results_directory, prefix, "bt", evalue)
+			bt_final = get_bt.parse_bt(bt_results, bpthresh, bqthresh, overlap)
+
+			logging.info("Finished Bt toxin gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 
 	else:
@@ -238,87 +252,68 @@ def run_pipeline(args):
 	# perform multi-locus sequence typing (MLST) using PubMLST's seven-gene scheme for Bacillus cereus
 	if mlst == "True":
 
-		if download_mlst_latest == "True":
+		with contextlib.ExitStack() as ctx:
+
+			if download_mlst_latest == "True":
+
+				logging.info("Downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
+				with urllib.request.urlopen("https://pubmlst.org/data/dbases.xml") as req:
+					tree = etree.parse(req)
+					parent = next(e for e in tree.iter("species") if e.text.strip() == "Bacillus cereus")
+					urls = (e.text for e in parent.iter("url"))
+
+				mlst_file = ctx.enter_context(tempfile.NamedTemporaryFile(suffix=".fas", mode="wb", buffering=0))
+				bcereus_file = ctx.enter_context(tempfile.NamedTemporaryFile(suffix=".txt", mode="wb", buffering=0))
+				mlst_path = mlst_file.name
+				bcereus_path = bcereus_file.name
+
+				for url in urls:
+					if "alleles_fasta" in url:
+						with urllib.request.urlopen(url) as req:
+							shutil.copyfileobj(req, mlst_file)
+					elif "profiles_csv" in url:
+						with urllib.request.urlopen(url) as req:
+							shutil.copyfileobj(req, bcereus_file)
+
+				logging.info("Finished downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
+
+			else:
+
+				db_time = importlib.resources.read_text("btyper3.seq_mlst_db", "timestamp.txt").strip()
+				logging.info("Using local PubMLST database (downloaded at {})".format(db_time))
+
+				mlst_path = ctx.enter_context(importlib.resources.path("btyper3.seq_mlst_db", "mlst.fas"))
+				bcereus_path = ctx.enter_context(importlib.resources.path("btyper3.seq_mlst_db", "bcereus.txt"))
 
 
-			logging.info("Downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
+			get_mlst = Blast(
+				task = "blastn",
+				dbseqs = infile,
+				fasta = mlst_path,
+				final_results_directory = final_results_directory,
+				prefix = prefix,
+				suffix = "mlst",
+				pthresh = 0,
+				qthresh = 0,
+				overlap = overlap,
+				evalue = evalue)
 
-			url = "https://pubmlst.org/data/dbases.xml"
-			resp = requests.get(url)
-			xml = btyper3_path + "seq_mlst_db/pubmlst.xml"
-			with open(xml, "wb") as f:
-				f.write(resp.content)
-			tree=ET.parse(xml)
-			root=tree.getroot()
-			species={}
-			for parent in root.iter("species"):
-				species[parent.text.strip()]=[]
-				for child in parent.iter("url"):
-					species[parent.text.strip()].append(child.text)
+			logging.info("Using blastn to identify potential seven-gene MLST genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
-			urlcol = species["Bacillus cereus"]
+			mlst_results = get_mlst.run_blast("blastn", infile, mlst_path, final_results_directory, prefix, "mlst", evalue)
+			mlst_alleles, perfect_matches = get_mlst.parse_mlst(mlst_results)
 
-			for u in urlcol:
+			logging.info("Finished seven-gene MLST gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
-				if "alleles_fasta" in u:
-					fname = u.split("/")[-2].strip()
-					resp = requests.get(u)
-					with open(btyper3_path + "seq_mlst_db/mlst.fas", "ab") as outfile:
-						outfile.write(resp.content)
-
-				elif "profiles_csv" in u:
-					fname = "bcereus.txt"
-					resp = requests.get(u)
-					with open(btyper3_path + "seq_mlst_db/" + fname, "wb") as outfile:
-						outfile.write(resp.content)
+			get_st = Mlst(
+				alleles = mlst_alleles,
+				profiles = bcereus_path,
+				perfect_matches = perfect_matches,
+				final_results_directory = final_results_directory,
+				prefix = prefix)
 
 
-			logging.info("Finished downloading most recent PubMLST datbase at " + now.strftime("%Y-%m-%d %H:%M"))
-
-
-		else:
-
-			logging.info("Searching for PubMLST datbase in " + btyper3_path + "seq_mlst_db/ at " + now.strftime("%Y-%m-%d %H:%M"))
-
-			if not os.path.isfile(btyper3_path + "seq_mlst_db/mlst.fas"):
-				logging.info("MLST fasta file " + btyper3_path + "seq_mlst_db/mlst.fas does not exist. Please use '--download_mlst_latest True' to download the latest version of PubMLST's Bacillus cereus database.")
-				logging.info("Exiting BTyper3 with error at " + now.strftime("%Y-%m-%d %H:%M"))
-				sys.exit()
-
-			if not os.path.isfile(btyper3_path + "seq_mlst_db/bcereus.txt"):
-				logging.info("PubMLST profile file named " + btyper3_path + "seq_mlst_db/bcereus.txt does not exist. Please use '--download_mlst_latest True' to download the latest version of PubMLST's Bacillus cereus database.")
-				logging.info("Exiting BTyper3 with error at " + now.strftime("%Y-%m-%d %H:%M"))
-				sys.exit()
-
-
-		get_mlst = Blast(
-			task = "blastn",
-			dbseqs = infile,
-			fasta = btyper3_path + "seq_mlst_db/mlst.fas",
-			final_results_directory = final_results_directory,
-			prefix = prefix,
-			suffix = "mlst",
-			pthresh = 0,
-			qthresh = 0,
-			overlap = overlap,
-			evalue = evalue)
-
-		logging.info("Using blastn to identify potential seven-gene MLST genes in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
-
-		mlst_results = get_mlst.run_blast("blastn", infile, btyper3_path + "seq_mlst_db/mlst.fas", final_results_directory, prefix, "mlst", evalue)
-		mlst_alleles, perfect_matches = get_mlst.parse_mlst(mlst_results)
-
-		logging.info("Finished seven-gene MLST gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
-
-		get_st = Mlst(
-			alleles = mlst_alleles,
-			profiles = btyper3_path + "seq_mlst_db/bcereus.txt",
-			perfect_matches = perfect_matches,
-			final_results_directory = final_results_directory,
-			prefix = prefix)
-
-
-		mlst_final = get_st.at2st(mlst_alleles, btyper3_path + "seq_mlst_db/bcereus.txt", perfect_matches, final_results_directory, prefix)
+			mlst_final = get_st.at2st(mlst_alleles, bcereus_path, perfect_matches, final_results_directory, prefix)
 
 
 	else:
@@ -330,23 +325,25 @@ def run_pipeline(args):
 	# perform panC phylogenetic group assignment using the adjusted, eight-group panC group assignment scheme
 	if panC == "True":
 
-		get_panC = Blast(
-			task = "blastn",
-			dbseqs = infile,
-			fasta = btyper3_path + "seq_panC_db/panC.fna",
-			final_results_directory = final_results_directory,
-			prefix = prefix,
-			suffix = "panC",
-			pthresh = 0,
-			qthresh = 0,
-			overlap = overlap,
-			evalue = evalue)
+		with importlib.resources.path("btyper3.seq_panC_db", "panC.fna") as panC_path:
 
-		logging.info("Using blastn to identify panC in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			get_panC = Blast(
+				task = "blastn",
+				dbseqs = infile,
+				fasta = panC_path,
+				final_results_directory = final_results_directory,
+				prefix = prefix,
+				suffix = "panC",
+				pthresh = 0,
+				qthresh = 0,
+				overlap = overlap,
+				evalue = evalue)
 
-		panC_results = get_panC.run_blast("blastn", infile, btyper3_path + "seq_panC_db/panC.fna", final_results_directory, prefix, "panC", evalue)
-		panC_final = get_panC.parse_panC(panC_results)
-		logging.info("Finished panC gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using blastn to identify panC in " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
+
+			panC_results = get_panC.run_blast("blastn", infile, panC_path, final_results_directory, prefix, "panC", evalue)
+			panC_final = get_panC.parse_panC(panC_results)
+			logging.info("Finished panC gene detection for " + prefix + " at " + now.strftime("%Y-%m-%d %H:%M"))
 
 
 	else:
@@ -379,9 +376,10 @@ def run_pipeline(args):
 
 	get_final_results.print_final_results(final_results_directory, infile, prefix, final_species, final_subspecies, final_geneflow, final_typestrains, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final)
 
-	if os.path.isfile(infile + ".nsq"):
-		cmd = "rm {0}.nsq {0}.nin {0}.nhr".format(infile)
-		os.system(cmd)
+	for blastdb_ext in ("nsq", "nin", "nhr"):
+		blastdb_file = "{}.{}".format(infile, blastdb_ext)
+		if os.path.isfile(blastdb_file):
+			os.remove(blastdb_file)
 
 	logging.info("")
 	logging.info("")
