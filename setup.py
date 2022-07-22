@@ -72,7 +72,7 @@ class build_py(_build_py):
                 gname, gpath = map(str.strip, line.split()[:2])
                 gfile = os.path.join(btyper3_path, "seq_ani_db", ani_directory, gname)
                 if not os.path.isfile(gfile):
-                    self.download(url=gpath, dest=gfile, decompress=True)
+                    self.download(url=gpath, dest=gfile)
 
 
 setuptools.setup(cmdclass={"build_py": build_py})

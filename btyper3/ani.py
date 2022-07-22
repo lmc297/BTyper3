@@ -1,5 +1,7 @@
 import csv
+import io
 import os
+import gzip
 import contextlib
 import importlib.resources
 import subprocess
@@ -49,8 +51,9 @@ class Ani:
 			genomes = [line.split()[0] for line in list if line.strip() and not line.startswith("#")]
 		# extract all the reference genomes
 		for genome in genomes:
-			with importlib.resources.open_text(data_module, genome) as handle:
-				records = Bio.SeqIO.parse(handle, "fasta")
+			with importlib.resources.open_binary(data_module, genome) as handle:
+				reader = io.TextIOWrapper(gzip.GzipFile(fileobj=handle, mode="rb"))
+				records = Bio.SeqIO.parse(reader, "fasta")
 				sketch.add_draft(genome, (str(record.seq) for record in records))
 
 		# index the references
@@ -88,9 +91,9 @@ class Ani:
 				return(final_species)
 
 			elif taxon == "subspecies":
-				if maxtax == "B_mosaicus_subsp_anthracis_Ames_GCF_000007845.fna" and maxani >= 99.9:
+				if maxtax == "B_mosaicus_subsp_anthracis_Ames_GCF_000007845.fna.gz" and maxani >= 99.9:
 					final_subspecies = "anthracis(" + str(maxani) + ")"
-				elif maxtax == "B_mosaicus_subsp_cereus_AH187_GCF_000021225.fna" and maxani >= 97.5:
+				elif maxtax == "B_mosaicus_subsp_cereus_AH187_GCF_000021225.fna.gz" and maxani >= 97.5:
 					final_subspecies = "cereus(" + str(maxani) + ")"
 				else:
 					final_subspecies = "No subspecies"
