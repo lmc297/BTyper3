@@ -66,7 +66,6 @@ def run_pipeline(args):
 	ani_subspecies = args.ani_subspecies
 	ani_geneflow = args.ani_geneflow
 	ani_typestrains = args.ani_typestrains
-	fastani_path = args.fastani_path
 	virulence = args.virulence
 	bt = args.bt
 	mlst = args.mlst
@@ -96,13 +95,12 @@ def run_pipeline(args):
 
 			get_species = Ani(
 				taxon = "species",
-				fastani_path = fastani_path,
 				fasta = infile,
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to assign " + prefix + " to a species at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_species = get_species.run_fastani("species", fastani_path, infile, final_results_directory, prefix)
+			final_species = get_species.run_fastani("species", infile, final_results_directory, prefix)
 			logging.info("Finished species assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
@@ -113,13 +111,12 @@ def run_pipeline(args):
 
 			get_subspecies = Ani(
 				taxon = "subspecies",
-				fastani_path = fastani_path,
 				fasta = infile,
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to assign " + prefix + " to a subspecies (if applicable) at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_subspecies = get_subspecies.run_fastani("subspecies", fastani_path, infile, final_results_directory, prefix)
+			final_subspecies = get_subspecies.run_fastani("subspecies", infile, final_results_directory, prefix)
 			logging.info("Finished subspecies assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
@@ -407,8 +404,6 @@ def main():
 	parser.add_argument("--ani_geneflow", help = "Optional argument; True or False; assign genome to a pseudo-gene flow unit using the method described by Carroll, et al. using FastANI; default = False", nargs = "?", default = "False")
 
 	parser.add_argument("--ani_typestrains", help = "Optional argument; True or False; calculate ANI values between the query genome relative to all B. cereus s.l. species type strain genomes using FastANI, and report the closest species type strain/highest ANI value; default = False", nargs = "?", default = "False")
-
-	parser.add_argument("--fastani_path", help = "Optional argument for use with --ani_species True and/or --ani_subspecies True and/or --ani_geneflow True; fastANI, unless path to fastANI executable is supplied; path to fastANI; default = fastANI <fastANI is in the user's path>", nargs = "?", default = "fastANI")
 
 	parser.add_argument("--virulence", help = "Optional argument; True or False; perform virulence gene detection (required if one wants to assign genomes to biovars Anthracis or Emeticus); default = True", nargs = "?", default = "True")
 

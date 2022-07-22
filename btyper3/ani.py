@@ -1,11 +1,13 @@
+import csv
 import os
 import contextlib
 import importlib.resources
 import subprocess
 import tempfile
 
-import pandas as pd
-import numpy as np
+import Bio.SeqIO
+import pandas
+import pyfastani
 from pandas.errors import EmptyDataError
 
 class Ani:
@@ -16,7 +18,6 @@ class Ani:
 	purpose: runs fastANI for species/subspecies assignment and selects match with highest ANI
 	input:
 		taxon = "species", "subspecies", or "geneflow"; corresponds to directory of genomes to use
-		fastani_path = path to fastANI executable
 		fasta = query genome for fastANI
 		final_results_directory = path to BTyper3 final results directory
 		prefix = genome prefix to use for output files
@@ -25,43 +26,53 @@ class Ani:
 
 	"""
 
-	def __init__(self, taxon, fastani_path, fasta, final_results_directory, prefix):
-
+	def __init__(self, taxon, fasta, final_results_directory, prefix):
 		self.taxon = taxon
-		self.fastani_path = fastani_path
 		self.fasta = fasta
 		self.final_results_directory = final_results_directory
 		self.prefix = prefix
 
-	def run_fastani(self, taxon, fastani_path, fasta, final_results_directory, prefix):
+	def run_fastani(self, taxon, fasta, final_results_directory, prefix):
 		# create output folder if it doesn't exist
 		ani_results_dir = os.path.join(final_results_directory, taxon)
 		os.makedirs(ani_results_dir, exist_ok=True)
+
+		# create the FastANI sketch
+		sketch = pyfastani.Sketch()
 
 		# get the ANI database using `importlib.resources`: note that since
 		# files may not be available on the local filesystem (e.g. they could
 		# be zipped), we use `importlib.resources.path` to get a system path
 		# for each of them than can be passed to `fastANI`.
-		with contextlib.ExitStack() as ctx:
-			# create a temporary file to list the reference genomes
-			ref_file = ctx.enter_context(tempfile.NamedTemporaryFile(suffix="txt", mode="w"))
-			# extract the list of reference genomes
-			data_module = "btyper3.seq_ani_db.{}".format(taxon)
-			with importlib.resources.open_text(data_module, "{}.txt".format(taxon)) as list:
-				genomes = [line.split()[0] for line in list if line.strip() and not line.startswith("#")]
-			# extract all the reference genomes
-			for genome in genomes:
-				fna_path = ctx.enter_context(importlib.resources.path(data_module, genome))
-				ref_file.write("{}\n".format(fna_path))
-			ref_file.flush()
-			# run fastANI
-			fastani_results = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
-			proc = subprocess.run([fastani_path, "-q", fasta, "--rl", ref_file.name, "-o", fastani_results])
-			proc.check_returncode()
+		data_module = "btyper3.seq_ani_db.{}".format(taxon)
+		with importlib.resources.open_text(data_module, "{}.txt".format(taxon)) as list:
+			genomes = [line.split()[0] for line in list if line.strip() and not line.startswith("#")]
+		# extract all the reference genomes
+		for genome in genomes:
+			with importlib.resources.open_text(data_module, genome) as handle:
+				records = Bio.SeqIO.parse(handle, "fasta")
+				sketch.add_draft(genome, (str(record.seq) for record in records))
+
+		# index the references
+		mapper = sketch.index()
+
+		# query mapper with the input file
+		with open(fasta) as handle:
+			records = Bio.SeqIO.parse(handle, "fasta")
+			hits = mapper.query_draft(str(record.seq) for record in records)
+
+		# make a table from the hits
+		ani_results_file = pandas.DataFrame([
+			[fasta, hit.name, hit.identity, hit.matches, hit.fragments]
+			for hit in hits
+		])
+
+		# write results
+		fastani_results = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
+		ani_results_file.to_csv(fastani_results, index=False, header=False, sep="\t")
 
 		try:
 			# extract results into a `pandas.DataFrame` object
-			ani_results_file = pd.read_csv(fastani_results, sep = "\s+", header = None)
 			ani_results_file.sort_values(by = [2], ascending = False, inplace = True)
 			maxtax = ani_results_file.iloc[0,1]
 			maxtax = maxtax.split("/")[-1].strip()
