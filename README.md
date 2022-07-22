@@ -18,7 +18,7 @@ For more information, check out the BTyper3 wiki at https://github.com/lmc297/BT
 
 For more information, check out the <a href="https://github.com/lmc297/BTyper3/wiki">BTyper3 wiki</a>
 
-### conda (recommended) 
+### conda (recommended)
 
 To create a conda environment named `btyper3` and install BTyper3 and all of its dependencies:
 
@@ -54,24 +54,22 @@ conda deactivate
 ### pip
 
 1. To run BTyper3, please download and install the following dependencies, if necessary:
-  
+
   <a href="https://www.python.org/downloads/">python3</a>
-  
+
   <a href="https://biopython.org/wiki/Download">Biopython v. 1.7.4 and up (for python3)</a>
-  
+
   <a href="https://pandas.pydata.org/pandas-docs/stable/install.html">Pandas (for python3)</a>
-  
+
   <a href="https://numpy.org/">NumPy (for python3)</a>
-  
+
   BLAST v. 2.9.0+ and up (ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/)
-  
-  <a href="https://github.com/ParBLiSS/FastANI">FastANI version 1.0 and up</a>
-  
+
+  <a href="https://github.com/althonos/pyfastani">pyFastANI version 0.3 and up</a>
+
 2. <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add BLAST+ to your path</a>, if necessary (to check if BLAST+ is in your path, try running ```makeblastdb -h``` and ```tblastn -h``` from your command line; you should get a help message for each command, with no error messages)
 
-3. Optional: <a href="https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path">Add fastANI to your path</a>, if necessary (to check if fastANI is in your path, try running ```fastANI -h``` from your command line; you should get a help message, with no error messages). Note that this step is optional; if you want to perform species and/or subspecies and/or pseudo-gene flow unit assignment using BTyper3, you can just use the ```--fastani_path``` argument and supply the path to the fastANI executable (```--fastani_path /path/to/fastANI```)
-
-4. Install via `pip`:
+3. Install via `pip`:
 
 ```
 pip install btyper3  
@@ -91,7 +89,7 @@ The type strain genomes used by BTyper3's `--ani_typestrains` option correspond 
 
 * All members of *Bacillus hominis* (type strain RefSeq Assembly Accession GCF_018332515.1) belong to *B. mycoides*
 
-**Importantly, *B. cereus* group species are often proposed in the literature using unstandardized approaches** (e.g., varying genomospecies thresholds, which may produce overlapping genomospecies). We have added the type strain comparison method in BTyper3 v3.2.0, as users may still want to compare a query genome with the type strains of published *B. cereus* group species. However, interpret results with caution, as some *B. cereus* group genomes may belong to multiple species using type strain genomes. 
+**Importantly, *B. cereus* group species are often proposed in the literature using unstandardized approaches** (e.g., varying genomospecies thresholds, which may produce overlapping genomospecies). We have added the type strain comparison method in BTyper3 v3.2.0, as users may still want to compare a query genome with the type strains of published *B. cereus* group species. However, interpret results with caution, as some *B. cereus* group genomes may belong to multiple species using type strain genomes.
 
 For more information, check out our:
 
@@ -106,20 +104,20 @@ For more information, check out our:
 ## Citation
 
 ### If you found the BTyper3 tool, its source code, and/or any of its associated databases useful, please cite:
-  
+
 Carroll, Laura M., Martin Wiedmann, Jasna Kovac. 2020. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7042689/">"Proposal of a Taxonomic Nomenclature for the *Bacillus cereus* Group Which Reconciles Genomic Definitions of Bacterial Species with Clinical and Industrial Phenotypes."</a> *mBio* 11(1): e00034-20; DOI: 10.1128/mBio.00034-20.
 
 Carroll, Laura M., Rachel A. Cheng, Jasna Kovac. 2020. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7536271/">"No Assembly Required: Using BTyper3 to Assess the Congruency of a Proposed Taxonomic Framework for the *Bacillus cereus* group with Historical Typing Methods."</a> *Frontiers in Microbiology* 11: 580691; DOI: 10.3389/fmicb.2020.580691.
 
 ------------------------------------------------------------------------
-  
-  
+
+
 ## Quick Start
 
 For detailed information, check out the <a href="https://github.com/lmc297/BTyper3/wiki">BTyper3 wiki</a>
-  
+
 ### Command Structure
-  
+
 ```
 btyper3 -i [fasta] -o [output directory] [options...]
 ```
