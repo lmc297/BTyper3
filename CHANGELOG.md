@@ -2,6 +2,14 @@
 
 All notable changes to BTyper3 will be documented in this file.
 
+## [Unreleased]
+### Added
+- Added "*Bacillus arachidis*" (NCBI RefSeq Assembly Accession GCF_017498775.1) to the `--ani_typestrains` database
+- Added *Bacillus rhizoplanae* (NCBI RefSeq Assembly Accession GCF_917563915.1) to the `--ani_typestrains` and `--ani_species` databases
+### Changed
+- Changed the name of "Unknown Species 17" to "*Bacillus arachidis*" in the `--ani_species` databasie
+- Included `ndb`, `not`, `ntf`, and `nto` in the list of BLAST database files to delete
+
 ## [3.2.0] - 2021-04-12
 ### Added
 - Added `--ani_typestrains` option to `btyper3`, which allows users to compare a query *B. cereus* group genome to the type strain genomes of all published *B. cereus* group species in the literature; this options calculates ANI values between the query genome and the genomes of all published *B. cereus* group species type strains and reports the type strain that produces the highest ANI value.

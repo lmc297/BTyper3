@@ -373,7 +373,7 @@ def run_pipeline(args):
 
 	get_final_results.print_final_results(final_results_directory, infile, prefix, final_species, final_subspecies, final_geneflow, final_typestrains, anthracis, emetic, nhe, hbl, cytK, sph, cap, has, bps, bt_final, mlst_final, panC_final)
 
-	for blastdb_ext in ("nsq", "nin", "nhr"):
+	for blastdb_ext in ("nsq", "nin", "nhr", "ndb", "not", "ntf", "nto"):
 		blastdb_file = "{}.{}".format(infile, blastdb_ext)
 		if os.path.isfile(blastdb_file):
 			os.remove(blastdb_file)
