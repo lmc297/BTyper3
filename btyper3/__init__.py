@@ -88,7 +88,7 @@ def run_pipeline(args):
 	logging.info("You are initializing this run at " + now().strftime("%Y-%m-%d %H:%M"))
 	logging.info("You ran the following command: ")
 	logging.info(" ".join([str(sa) for sa in sys.argv]))
-	logging.info("Report bugs/concerns to Laura M. Carroll, laura.carroll@embl.de")
+	logging.info("Report bugs/concerns to Laura M. Carroll <laura.carroll@embl.de>")
 
 
 	# perform species and/or supspecies assignment
@@ -102,7 +102,7 @@ def run_pipeline(args):
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
-			logging.info("Using FastANI to assign " + prefix + " to a species at " + now().strftime("%Y-%m-%d %H:%M"))
+			logging.info("Using PyFastANI to assign " + prefix + " to a species at " + now().strftime("%Y-%m-%d %H:%M"))
 			final_species = get_species.run_fastani("species", infile, final_results_directory, prefix)
 			logging.info("Finished species assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
@@ -392,7 +392,7 @@ def main():
 
 	# BTyper3 arguments
 
-	parser = argparse.ArgumentParser(usage = "btyper3 -i </path/to/genome.fasta> -o </path/to/output/directory/> [other options]")
+	parser = argparse.ArgumentParser(prog = "btyper3", usage = "btyper3 -i </path/to/genome.fasta> -o </path/to/output/directory/> [other options]")
 
 	parser.add_argument("-i", "--input", help = "Path to input genome in fasta format", nargs = 1, required = True)
 
