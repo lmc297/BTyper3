@@ -19,6 +19,9 @@ from .blast import Blast
 from .mlst import Mlst
 from .print_final_results import FinalResults
 
+__author__ = "Laura M. Carroll <lmc297@cornell.edu>"
+__version__ = "3.2.0"
+
 
 def run_pipeline(args):
 	"""
@@ -429,7 +432,7 @@ def main():
 
 	parser.add_argument("--download_mlst_latest", help = "Optional argument for use with --mlst True; True or False; download the latest version of the seven-gene multi-locus sequence typing (MLST) scheme available in PubMLST; if this is False, BTyper3 will search for the appropriate files in the seq_mlst_db directory; default = False", nargs = "?", default = "False")
 
-	parser.add_argument("--version", action="version", version='%(prog)s 3.2.0', help="Print version")
+	parser.add_argument("--version", action="version", version='%(prog)s {}'.format(__version__), help="Print version")
 
 	args = parser.parse_args()
 
