@@ -130,13 +130,12 @@ def run_pipeline(args):
 
 			get_geneflow = Ani(
 				taxon = "geneflow",
-				fastani_path = fastani_path,
 				fasta = infile,
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to assign " + prefix + " to a pseudo-gene flow unit at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_geneflow = get_geneflow.run_fastani("geneflow", fastani_path, infile, final_results_directory, prefix)
+			final_geneflow = get_geneflow.run_fastani("geneflow", infile, final_results_directory, prefix)
 			logging.info("Finished pseudo-gene flow unit assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
@@ -147,13 +146,12 @@ def run_pipeline(args):
 
 			get_typestrains = Ani(
 				taxon = "typestrains",
-				fastani_path = fastani_path,
 				fasta = infile,
 				final_results_directory = final_results_directory,
 				prefix = prefix)
 
 			logging.info("Using FastANI to compare " + prefix + " to B. cereus s.l. species type strain genomes at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_typestrains = get_typestrains.run_fastani("typestrains", fastani_path, infile, final_results_directory, prefix)
+			final_typestrains = get_typestrains.run_fastani("typestrains", infile, final_results_directory, prefix)
 			logging.info("Finished B. cereus s.l. species type strain comparison of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
 		else:
