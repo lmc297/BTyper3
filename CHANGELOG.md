@@ -2,12 +2,17 @@
 
 All notable changes to BTyper3 will be documented in this file.
 
+## [3.3.1] - 2022-08-12
+### Fixed
+- Issue with PyFastANI migration when running the `--ani_geneflow` and `--ani_typestrains` operations.
+- Wrong program name being shown when running `btyper3` in module form (`python -m btyper3`).
+
 ## [3.3.0] - 2022-08-11
 ### Added
 - Added "*Bacillus arachidis*" (NCBI RefSeq Assembly Accession GCF_017498775.1) to the `--ani_typestrains` database
 - Added *Bacillus rhizoplanae* (NCBI RefSeq Assembly Accession GCF_917563915.1) to the `--ani_typestrains` and `--ani_species` databases
 ### Changed
-- Changed the name of "Unknown Species 17" to "*Bacillus arachidis*" in the `--ani_species` databasie
+- Changed the name of "Unknown Species 17" to "*Bacillus arachidis*" in the `--ani_species` database
 - Included `ndb`, `not`, `ntf`, and `nto` in the list of BLAST database files to delete
 
 ## [3.2.0] - 2021-04-12
