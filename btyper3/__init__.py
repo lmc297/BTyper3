@@ -20,7 +20,7 @@ from .mlst import Mlst
 from .print_final_results import FinalResults
 
 __author__ = "Laura M. Carroll <lmc297@cornell.edu>"
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 
 
 def run_pipeline(args):

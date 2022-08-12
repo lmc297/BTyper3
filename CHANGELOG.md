@@ -2,7 +2,7 @@
 
 All notable changes to BTyper3 will be documented in this file.
 
-## [Unreleased]
+## [3.3.0] - 2022-08-11
 ### Added
 - Added "*Bacillus arachidis*" (NCBI RefSeq Assembly Accession GCF_017498775.1) to the `--ani_typestrains` database
 - Added *Bacillus rhizoplanae* (NCBI RefSeq Assembly Accession GCF_917563915.1) to the `--ani_typestrains` and `--ani_species` databases
