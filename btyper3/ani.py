@@ -6,6 +6,7 @@ import contextlib
 import importlib.resources
 import subprocess
 import tempfile
+import warnings
 
 import Bio.SeqIO
 import pandas
@@ -62,24 +63,26 @@ class Ani:
 		# query mapper with the input file
 		with open(fasta) as handle:
 			records = Bio.SeqIO.parse(handle, "fasta")
+			sequences = [str(record.seq) for record in records]
+			self.check_fragmentation(sequences, mapper.fragment_length)
 			hits = mapper.query_draft(str(record.seq) for record in records)
 
 		# make a table from the hits
-		ani_results_file = pandas.DataFrame([
+		ani_results = pandas.DataFrame([
 			[fasta, hit.name, hit.identity, hit.matches, hit.fragments]
 			for hit in hits
 		])
 
 		# write results
 		fastani_results = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
-		ani_results_file.to_csv(fastani_results, index=False, header=False, sep="\t")
+		ani_results.to_csv(fastani_results, index=False, header=False, sep="\t")
 
-		try:
+		if not ani_results.empty:
 			# extract results into a `pandas.DataFrame` object
-			ani_results_file.sort_values(by = [2], ascending = False, inplace = True)
-			maxtax = ani_results_file.iloc[0,1]
+			ani_results.sort_values(by = [2], ascending = False, inplace = True)
+			maxtax = ani_results.iloc[0,1]
 			maxtax = maxtax.split("/")[-1].strip()
-			maxani = ani_results_file.iloc[0,2]
+			maxani = ani_results.iloc[0,2]
 
 			if taxon == "species":
 				species = maxtax.split("_")[1].strip()
@@ -109,9 +112,9 @@ class Ani:
 					found_alternate = 0
 					test_top5 = [1, 2, 3, 4]
 					for tt in test_top5:
-						testtax = ani_results_file.iloc[tt,1]
+						testtax = ani_results.iloc[tt,1]
 						testtax = testtax.split("/")[-1].strip()
-						testani = ani_results_file.iloc[tt,2]
+						testani = ani_results.iloc[tt,2]
 						test_minani = testtax.split("_")[3].strip()
 						test_minani = float(test_minani.split("-")[0].strip())
 						if testani >= test_minani:
@@ -128,7 +131,7 @@ class Ani:
 				final_typestrains = maxtype + "(" + str(maxani) + ")"
 				return(final_typestrains)
 
-		except EmptyDataError:
+		else:
 			if taxon == "species":
 				final_species = "(Species unknown)"
 				return(final_species)
@@ -141,3 +144,12 @@ class Ani:
 			elif taxon == "typestrains":
 				final_typestrains = "(Type strain unknown)"
 				return(final_typestrains)
+
+	def check_fragmentation(self, sequences, fragment_length):
+		length_total = 0
+		length_in_fragment = 0
+		for sequence in sequences:
+			length_total += len(sequence)
+			length_in_fragment += len(sequence) % fragment_length
+		if length_in_fragment * 2 > length_total:
+			warnings.warn("Genome is heavily fragmented, ANI results will not be reliable.")
