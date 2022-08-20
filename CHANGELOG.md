@@ -2,6 +2,12 @@
 
 All notable changes to BTyper3 will be documented in this file.
 
+## [3.3.2] - 2022-08-20
+### Fixed
+- PyFastANI result handling code crashing on genomes too distant from the database genomes.
+### Added
+- Warning when running `btyper3` on a very fragmented genome.
+
 ## [3.3.1] - 2022-08-12
 ### Fixed
 - Issue with PyFastANI migration when running the `--ani_geneflow` and `--ani_typestrains` operations.
