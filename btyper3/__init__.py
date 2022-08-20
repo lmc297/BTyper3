@@ -10,6 +10,7 @@ import sys
 import shutil
 import tempfile
 import urllib.request
+import warnings
 import xml.etree.ElementTree as etree
 
 from Bio import SeqIO
@@ -21,6 +22,16 @@ from .print_final_results import FinalResults
 
 __author__ = "Laura M. Carroll <lmc297@cornell.edu>"
 __version__ = "3.3.1"
+
+
+@contextlib.contextmanager
+def _forward_warnings():
+	_showwarning = warnings.showwarning
+	try:
+		warnings.showwarning = lambda message, category, filename, lineno, file=None, line=None: logging.warning(f"Warning: {message}")
+		yield
+	finally:
+		warnings.showwarning = _showwarning
 
 
 def run_pipeline(args):
@@ -94,69 +105,71 @@ def run_pipeline(args):
 	# perform species and/or supspecies assignment
 	if ani_species == "True" or ani_subspecies == "True" or ani_geneflow == "True" or ani_typestrains == "True":
 
-		if ani_species == "True":
+		with _forward_warnings():
 
-			get_species = Ani(
-				taxon = "species",
-				fasta = infile,
-				final_results_directory = final_results_directory,
-				prefix = prefix)
+			if ani_species == "True":
 
-			logging.info("Using PyFastANI to assign " + prefix + " to a species at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_species = get_species.run_fastani("species", infile, final_results_directory, prefix)
-			logging.info("Finished species assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
+				get_species = Ani(
+					taxon = "species",
+					fasta = infile,
+					final_results_directory = final_results_directory,
+					prefix = prefix)
 
-		else:
+				logging.info("Using PyFastANI to assign " + prefix + " to a species at " + now().strftime("%Y-%m-%d %H:%M"))
+				final_species = get_species.run_fastani("species", infile, final_results_directory, prefix)
+				logging.info("Finished species assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
-			final_species = "(Species assignment not performed)"
+			else:
 
-		if ani_subspecies == "True":
+				final_species = "(Species assignment not performed)"
 
-			get_subspecies = Ani(
-				taxon = "subspecies",
-				fasta = infile,
-				final_results_directory = final_results_directory,
-				prefix = prefix)
+			if ani_subspecies == "True":
 
-			logging.info("Using FastANI to assign " + prefix + " to a subspecies (if applicable) at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_subspecies = get_subspecies.run_fastani("subspecies", infile, final_results_directory, prefix)
-			logging.info("Finished subspecies assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
+				get_subspecies = Ani(
+					taxon = "subspecies",
+					fasta = infile,
+					final_results_directory = final_results_directory,
+					prefix = prefix)
 
-		else:
+				logging.info("Using FastANI to assign " + prefix + " to a subspecies (if applicable) at " + now().strftime("%Y-%m-%d %H:%M"))
+				final_subspecies = get_subspecies.run_fastani("subspecies", infile, final_results_directory, prefix)
+				logging.info("Finished subspecies assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
-			final_subspecies = "(Subspecies assignment not performed)"
+			else:
 
-		if ani_geneflow == "True":
+				final_subspecies = "(Subspecies assignment not performed)"
 
-			get_geneflow = Ani(
-				taxon = "geneflow",
-				fasta = infile,
-				final_results_directory = final_results_directory,
-				prefix = prefix)
+			if ani_geneflow == "True":
 
-			logging.info("Using FastANI to assign " + prefix + " to a pseudo-gene flow unit at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_geneflow = get_geneflow.run_fastani("geneflow", infile, final_results_directory, prefix)
-			logging.info("Finished pseudo-gene flow unit assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
+				get_geneflow = Ani(
+					taxon = "geneflow",
+					fasta = infile,
+					final_results_directory = final_results_directory,
+					prefix = prefix)
 
-		else:
+				logging.info("Using FastANI to assign " + prefix + " to a pseudo-gene flow unit at " + now().strftime("%Y-%m-%d %H:%M"))
+				final_geneflow = get_geneflow.run_fastani("geneflow", infile, final_results_directory, prefix)
+				logging.info("Finished pseudo-gene flow unit assignment of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
-			final_geneflow = "(Pseudo-gene flow unit assignment not performed)"
+			else:
 
-		if ani_typestrains == "True":
+				final_geneflow = "(Pseudo-gene flow unit assignment not performed)"
 
-			get_typestrains = Ani(
-				taxon = "typestrains",
-				fasta = infile,
-				final_results_directory = final_results_directory,
-				prefix = prefix)
+			if ani_typestrains == "True":
 
-			logging.info("Using FastANI to compare " + prefix + " to B. cereus s.l. species type strain genomes at " + now().strftime("%Y-%m-%d %H:%M"))
-			final_typestrains = get_typestrains.run_fastani("typestrains", infile, final_results_directory, prefix)
-			logging.info("Finished B. cereus s.l. species type strain comparison of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
+				get_typestrains = Ani(
+					taxon = "typestrains",
+					fasta = infile,
+					final_results_directory = final_results_directory,
+					prefix = prefix)
 
-		else:
+				logging.info("Using FastANI to compare " + prefix + " to B. cereus s.l. species type strain genomes at " + now().strftime("%Y-%m-%d %H:%M"))
+				final_typestrains = get_typestrains.run_fastani("typestrains", infile, final_results_directory, prefix)
+				logging.info("Finished B. cereus s.l. species type strain comparison of " + prefix + " at " + now().strftime("%Y-%m-%d %H:%M"))
 
-			final_typestrains = "(Type strain-based taxonomic assignment not performed)"
+			else:
+
+				final_typestrains = "(Type strain-based taxonomic assignment not performed)"
 
 	else:
 
