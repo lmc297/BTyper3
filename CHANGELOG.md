@@ -2,6 +2,10 @@
 
 All notable changes to BTyper3 will be documented in this file.
 
+## [3.3.3] - 2022-10-17
+### Fixed
+- `btyper3.ani` failing to read query genome from an exhausted sequence iterator.
+
 ## [3.3.2] - 2022-08-20
 ### Fixed
 - PyFastANI result handling code crashing on genomes too distant from the database genomes.
