@@ -65,7 +65,7 @@ class Ani:
 			records = Bio.SeqIO.parse(handle, "fasta")
 			sequences = [str(record.seq) for record in records]
 			self.check_fragmentation(sequences, mapper.fragment_length)
-			hits = mapper.query_draft(str(record.seq) for record in records)
+			hits = mapper.query_draft(sequences)
 
 		# make a table from the hits
 		ani_results = pandas.DataFrame([
