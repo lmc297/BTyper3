@@ -4,6 +4,7 @@ import os
 import gzip
 import contextlib
 import importlib.resources
+import itertools
 import subprocess
 import tempfile
 import warnings
@@ -48,8 +49,8 @@ class Ani:
 		# be zipped), we use `importlib.resources.path` to get a system path
 		# for each of them than can be passed to `fastANI`.
 		data_module = "btyper3.seq_ani_db.{}".format(taxon)
-		with importlib.resources.open_text(data_module, "{}.txt".format(taxon)) as list:
-			genomes = [line.split()[0] for line in list if line.strip() and not line.startswith("#")]
+		with importlib.resources.open_text(data_module, "{}.txt".format(taxon)) as f:
+			genomes = [line.split()[0] for line in f if line.strip() and not line.startswith("#")]
 		# extract all the reference genomes
 		for genome in genomes:
 			with importlib.resources.open_binary(data_module, genome) as handle:
@@ -68,82 +69,76 @@ class Ani:
 			hits = mapper.query_draft(sequences)
 
 		# make a table from the hits
-		ani_results = pandas.DataFrame([
-			[fasta, hit.name, hit.identity, hit.matches, hit.fragments]
-			for hit in hits
-		])
+		results = pandas.DataFrame(
+			data=[
+				[fasta, hit.name, hit.identity, hit.matches, hit.fragments]
+				for hit in hits
+			],
+			columns=[
+				"query",
+				"hit",
+				"ani",
+				"matches",
+				"fragments",
+			],
+		)
 
-		# write results
-		fastani_results = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
-		ani_results.to_csv(fastani_results, index=False, header=False, sep="\t")
+		# write raw FastANI results
+		result_file = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
+		results.to_csv(result_file, index=False, header=False, sep="\t")
 
-		if not ani_results.empty:
-			# extract results into a `pandas.DataFrame` object
-			ani_results.sort_values(by = [2], ascending = False, inplace = True)
-			maxtax = ani_results.iloc[0,1]
-			maxtax = maxtax.split("/")[-1].strip()
-			maxani = ani_results.iloc[0,2]
+		if not results.empty:
+			# sort values by decreasing ANI and get best hit
+			results.sort_values("ani", ascending = False, inplace = True)
+			best = results.iloc[0]
 
 			if taxon == "species":
-				species = maxtax.split("_")[1].strip()
+				species = best.hit.split("_")[1].strip()
 				if species == "cereus":
 					species = "cereus s.s."
-				if maxani < 92.5:
-					species = species + "*"
-				final_species = species + "(" + str(maxani) + ")"
-				return(final_species)
+				if best.ani < 92.5:
+					species = f"{species}*"
+				return f"{species}({best.ani})"
 
 			elif taxon == "subspecies":
-				if maxtax == "B_mosaicus_subsp_anthracis_Ames_GCF_000007845.fna.gz" and maxani >= 99.9:
-					final_subspecies = "anthracis(" + str(maxani) + ")"
-				elif maxtax == "B_mosaicus_subsp_cereus_AH187_GCF_000021225.fna.gz" and maxani >= 97.5:
-					final_subspecies = "cereus(" + str(maxani) + ")"
+				if best.hit == "B_mosaicus_subsp_anthracis_Ames_GCF_000007845.fna.gz" and best.ani >= 99.9:
+					return f"anthracis({best.ani})"
+				elif best.hit == "B_mosaicus_subsp_cereus_AH187_GCF_000021225.fna.gz" and best.ani >= 97.5:
+					return f"cereus({best.ani})"
 				else:
-					final_subspecies = "No subspecies"
-				return(final_subspecies)
+					return "No subspecies"
 
 			elif taxon == "geneflow":
-				psub = maxtax.split("_")[1].strip()
-				minani = maxtax.split("_")[3].strip()
-				minani = float(minani.split("-")[0].strip())
-				# if the ANI value doesn't fall within the pseudo-gene flow unit ANI boundary
-				if maxani < minani:
-					# try the 2nd, 3rd, 4th, and 5th most similar genomes
-					found_alternate = 0
-					test_top5 = [1, 2, 3, 4]
-					for tt in test_top5:
-						testtax = ani_results.iloc[tt,1]
-						testtax = testtax.split("/")[-1].strip()
-						testani = ani_results.iloc[tt,2]
-						test_minani = testtax.split("_")[3].strip()
-						test_minani = float(test_minani.split("-")[0].strip())
-						if testani >= test_minani:
-							psub = testtax.split("_")[1].strip()
-							found_alternate = 1
-					if found_alternate == 0:
-						psub = psub + "*"
-
-				final_geneflow = psub + "(" + str(maxani) + ")"
-				return(final_geneflow)
+				# compute pseudo-gene flow unit and minimum ANI thresholds
+				results["psub"] = results["hit"].str.split("_").str[1].str.strip()
+				results["min_ani"] = results["hit"].str.split("_").str[3].str.split("-").str[0].apply(float)
+				best = results.iloc[0]
+				psub = best.psub
+				# if the ANI value doesn't fall within the pseudo-gene flow unit ANI boundary,
+				# try the 2nd to 5th most similar genomes
+				if best.ani < best.min_ani:
+					for candidate in itertools.islice(results.itertuples(), 1, 5):
+						if candidate.ani >= candidate.min_ani:
+							best = candidate
+							psub = best.psub
+							break
+					else:
+						psub = f"{psub}*"
+				return f"{psub}({best.ani})"
 
 			elif taxon == "typestrains":
-				maxtype = maxtax.split("_")[1].strip()
-				final_typestrains = maxtype + "(" + str(maxani) + ")"
-				return(final_typestrains)
+				maxtype = best.hit.split("_")[1].strip()
+				return f"{maxtype}({maxani})"
 
 		else:
 			if taxon == "species":
-				final_species = "(Species unknown)"
-				return(final_species)
+				return "(Species unknown)"
 			elif taxon == "subspecies":
-				final_subspecies = "No subspecies"
-				return(final_subspecies)
+				return "No subspecies"
 			elif taxon == "geneflow":
-				final_geneflow = "(Pseudo-gene flow unit unknown)"
-				return(final_geneflow)
+				return "(Pseudo-gene flow unit unknown)"
 			elif taxon == "typestrains":
-				final_typestrains = "(Type strain unknown)"
-				return(final_typestrains)
+				return "(Type strain unknown)"
 
 	def check_fragmentation(self, sequences, fragment_length):
 		length_total = 0
