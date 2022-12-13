@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import collections
+import csv
 import datetime
 import gzip
 import os
@@ -29,8 +30,8 @@ class build_py(_build_py):
 
         # download genome files for each databases
         for subset in ("species", "subspecies", "geneflow", "typestrains"):
-            list = os.path.join(btyper3_path, "seq_ani_db", subset, "{}.txt".format(subset))
-            self.download_genomes(btyper3_path, list, subset)
+            db = os.path.join(btyper3_path, "seq_ani_db", subset, "{}.tsv".format(subset))
+            self.download_genomes(btyper3_path, db, subset)
 
     def download(self, url, dest, append=False, decompress=False):
         print("downloading {!r} to {!r}".format(url, dest))
@@ -66,13 +67,16 @@ class build_py(_build_py):
 
     def download_genomes(self, btyper3_path, genome_list, ani_directory):
         with open(genome_list) as genomes:
-            for line in genomes:
-                if line.startswith("#"):
-                    continue
-                gname, gpath = map(str.strip, line.split()[:2])
-                gfile = os.path.join(btyper3_path, "seq_ani_db", ani_directory, gname)
+            reader = csv.reader(genomes, dialect="excel-tab")
+
+            header = next(reader)
+            id_col = header.index("id")
+            url_col = header.index("url")
+
+            for row in reader:
+                gfile = os.path.join(btyper3_path, "seq_ani_db", ani_directory, row[id_col])
                 if not os.path.isfile(gfile):
-                    self.download(url=gpath, dest=gfile)
+                    self.download(url=row[url_col], dest=gfile)
 
 
 setuptools.setup(cmdclass={"build_py": build_py})
