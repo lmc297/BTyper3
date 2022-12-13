@@ -2,6 +2,12 @@
 
 All notable changes to BTyper3 will be documented in this file.
 
+## [3.3.4] - 2022-12-13
+### Fixed
+- `btyper3.ani` occasionally crashing in `--ani_geneflow` when the best hit is under threshold and not enough hits were obtained.
+### Changed
+- Reorganize `btyper3.ani` data files to store metadata and rewrite formatting code in `Ani.run_fastani`.
+
 ## [3.3.3] - 2022-10-17
 ### Fixed
 - `btyper3.ani` failing to read query genome from an exhausted sequence iterator.
