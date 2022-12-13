@@ -49,14 +49,14 @@ class Ani:
 		# be zipped), we use `importlib.resources.path` to get a system path
 		# for each of them than can be passed to `fastANI`.
 		data_module = "btyper3.seq_ani_db.{}".format(taxon)
-		with importlib.resources.open_text(data_module, "{}.txt".format(taxon)) as f:
-			genomes = [line.split()[0] for line in f if line.strip() and not line.startswith("#")]
+		with importlib.resources.open_text(data_module, "{}.tsv".format(taxon)) as f:
+			database = pandas.read_table(f, comment="#")
 		# extract all the reference genomes
-		for genome in genomes:
-			with importlib.resources.open_binary(data_module, genome) as handle:
+		for genome_id in database["id"]:
+			with importlib.resources.open_binary(data_module, genome_id) as handle:
 				reader = io.TextIOWrapper(gzip.GzipFile(fileobj=handle, mode="rb"))
 				records = Bio.SeqIO.parse(reader, "fasta")
-				sketch.add_draft(genome, (str(record.seq) for record in records))
+				sketch.add_draft(genome_id, (str(record.seq) for record in records))
 
 		# index the references
 		mapper = sketch.index()
@@ -87,48 +87,39 @@ class Ani:
 		result_file = os.path.join(ani_results_dir, "{}_{}_fastani.txt".format(prefix, taxon))
 		results.to_csv(result_file, index=False, header=False, sep="\t")
 
+		# left join with database to get associated metadata for each hit
+		results = pandas.merge( results, database, how="left", left_on="hit", right_on="id")
+
 		if not results.empty:
 			# sort values by decreasing ANI and get best hit
 			results.sort_values("ani", ascending = False, inplace = True)
 			best = results.iloc[0]
 
 			if taxon == "species":
-				species = best.hit.split("_")[1].strip()
-				if species == "cereus":
-					species = "cereus s.s."
-				if best.ani < 92.5:
-					species = f"{species}*"
-				return f"{species}({best.ani})"
+				if best.ani < best.threshold:
+					return f"{best.species}*({best.ani})"
+				else:
+					return f"{best.species}({best.ani})"
 
 			elif taxon == "subspecies":
-				if best.hit == "B_mosaicus_subsp_anthracis_Ames_GCF_000007845.fna.gz" and best.ani >= 99.9:
-					return f"anthracis({best.ani})"
-				elif best.hit == "B_mosaicus_subsp_cereus_AH187_GCF_000021225.fna.gz" and best.ani >= 97.5:
-					return f"cereus({best.ani})"
-				else:
+				if best.ani < best.threshold:
 					return "No subspecies"
+				else:
+					return f"{best.subspecies}({best.ani})"
 
 			elif taxon == "geneflow":
-				# compute pseudo-gene flow unit and minimum ANI thresholds
-				results["psub"] = results["hit"].str.split("_").str[1].str.strip()
-				results["min_ani"] = results["hit"].str.split("_").str[3].str.split("-").str[0].apply(float)
-				best = results.iloc[0]
-				psub = best.psub
-				# if the ANI value doesn't fall within the pseudo-gene flow unit ANI boundary,
-				# try the 2nd to 5th most similar genomes
-				if best.ani < best.min_ani:
+				if best.ani < best.threshold:
+					# if the ANI value doesn't fall within the pseudo-gene flow 
+					# unit ANI boundary, try the 2nd to 5th most similar genomes
 					for candidate in itertools.islice(results.itertuples(), 1, 5):
-						if candidate.ani >= candidate.min_ani:
-							best = candidate
-							psub = best.psub
-							break
-					else:
-						psub = f"{psub}*"
-				return f"{psub}({best.ani})"
+						if candidate.ani >= candidate.threshold:
+							return f"{candidate.psub}({candidate.ani})"
+					return f"{best.psub}*({best.ani})"
+				else:
+					return f"{best.psub}({best.ani})"
 
 			elif taxon == "typestrains":
-				maxtype = best.hit.split("_")[1].strip()
-				return f"{maxtype}({maxani})"
+				return f"{best.typestrain}({best.ani})"
 
 		else:
 			if taxon == "species":
