@@ -1,6 +1,11 @@
 # BTyper3 CHANGELOG
 
 All notable changes to BTyper3 will be documented in this file.
+## [3.4.0] - 2023-06-01
+### Added
+- Added "*Bacillus pretiosus*" (NCBI RefSeq Assembly Accession GCF_025916425.1) to the `--ani_typestrains` database
+### Changed
+- Changed `--ani_typestrains` to `True` by default (to be compatible with BRisk USDA project)
 
 ## [3.3.4] - 2022-12-13
 ### Fixed

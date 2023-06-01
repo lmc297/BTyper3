@@ -64,11 +64,11 @@ To create a conda environment named `btyper3` and install BTyper3 and all of its
 
 ------------------------------------------------------------------------
 
-## News: updates in BTyper3 v3.2.0 and v3.3.0 -- new species just dropped!
+## News: updates in BTyper3 v3.2.0, v3.3.0, and v3.4.0 -- new species just dropped!
 
 The primary function of BTyper3 is to allow users to taxonomically classify *B. cereus* group genomes using a standardized nomenclature (see <a href="https://journals.asm.org/doi/10.1128/mBio.00034-20">here</a> and <a href="https://www.frontiersin.org/articles/10.3389/fmicb.2020.580691/full">here</a> for details regarding how the standardized nomenclature was constructed, and how it compares to historical typing methods, respectively). However, we understand that some users may also want to compare their *B. cereus* group genomes to the type strain genomes of published *B. cereus* group species. Thus, in BTyper3 v3.2.0, we have added the `--ani_typestrains` option, which calculates ANI values between a query genome and the genomes of all published *B. cereus* group species type strains and reports the type strain that produces the highest ANI value.
 
-The type strain genomes used by BTyper3's `--ani_typestrains` option correspond to the species discussed in <a href="https://www.tandfonline.com/doi/full/10.1080/10408398.2021.1916735">Figure 2 of our taxonomy review</a>, plus five species published after the review was published</a> (i.e., *Bacillus sanguinis*, *Bacillus paramobilis*, and *Bacillus hominis*, added in v3.2.0, and "*B. arachidis*" and *B. rhizoplanae*, added in v3.3.0). Within the standardized taxonomy that BTyper3 uses for genomospecies assignment:
+The type strain genomes used by BTyper3's `--ani_typestrains` option correspond to the species discussed in <a href="https://www.tandfonline.com/doi/full/10.1080/10408398.2021.1916735">Figure 2 of our taxonomy review</a>, plus species published after the review was published</a> (i.e., *Bacillus sanguinis*, *Bacillus paramobilis*, and *Bacillus hominis*, added in v3.2.0; "*B. arachidis*" and *B. rhizoplanae*, added in v3.3.0; "*B. pretiosus*", added in v3.4.0). Within the standardized taxonomy that BTyper3 uses for genomospecies assignment:
 
 * All members of *Bacillus sanguinis* (type strain RefSeq Assembly Accession GCF_018332475.1) belong to *B. mosaicus* (i.e., *B. sanguinis* is not considered a novel species in the standardized taxonomy)
 
@@ -79,6 +79,8 @@ The type strain genomes used by BTyper3's `--ani_typestrains` option correspond 
 * "*Bacillus arachidis*" (type strain RefSeq Assembly Accession GCF_017498775.1) replaces the putative genomospecies previously referred to as "Unknown Species 17" in the standardized taxonomy
 
 * *Bacillus rhizoplanae* (type strain RefSeq Assembly Accession GCF_917563915.1) represents a novel genomospecies within the standardized taxonomy and has been added to the database
+
+* All members of "*Bacillus pretiosus*" (type strain RefSeq Assembly Accession GCF_025916425.1) belong to *B. mosaicus* (i.e., "*B. pretiosus*" is not considered a novel species in the standardized taxonomy)
 
 **Importantly, *B. cereus* group species are often proposed in the literature using unstandardized approaches** (e.g., varying genomospecies thresholds, which may produce overlapping genomospecies). We have added the type strain comparison method in BTyper3 v3.2.0, as users may still want to compare a query genome with the type strains of published *B. cereus* group species. However, interpret results with caution, as some *B. cereus* group genomes may belong to multiple species using type strain genomes.
 
@@ -131,28 +133,28 @@ btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory
 btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --fastani_path /path/to/FastANI_executable/fastANI
 ```
 
-#### Perform all default analyses, plus pseudo-gene flow unit assignment AND species type strain comparison, using an assembled genome (complete or draft) in (multi-)FASTA format as input (assumes fastANI is in the user's path):
+#### Perform all default analyses, plus pseudo-gene flow unit assignment, using an assembled genome (complete or draft) in (multi-)FASTA format as input (assumes fastANI is in the user's path):
 
 ```
-btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --ani_geneflow True --ani_typestrains True
+btyper3 -i /path/to/genome.fasta -o /path/to/desired/output_directory --ani_geneflow True
 ```
 
 #### Perform seven-gene MLST only, using user-supplied MLST gene sequences and the latest version of the PubMLST *B. cereus s.l.* database (sequences can be in multi-FASTA format, or concatenated into a single sequence in FASTA format):
 
 ```
-btyper3 -i /path/to/mlst.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --virulence False --bt False --panC False --download_mlst_latest True
+btyper3 -i /path/to/mlst.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --ani_typestrains False --virulence False --bt False --panC False --download_mlst_latest True
 ```
 
 #### Perform *panC* group assignment only, using a user-supplied *panC* gene sequence in FASTA format:
 
 ```
-btyper3 -i /path/to/panC.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --virulence False --bt False --mlst False
+btyper3 -i /path/to/panC.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --ani_typestrains False --virulence False --bt False --mlst False
 ```
 
 #### Perform virulence factor and Bt toxin-encoding gene detection in a plasmid sequence in FASTA format:
 
 ```
-btyper3 -i /path/to/plasmid.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --mlst False --panC False
+btyper3 -i /path/to/plasmid.fasta -o /path/to/desired/output_directory --ani_species False --ani_subspecies False --ani_typestrains False --mlst False --panC False
 ```
 
 
