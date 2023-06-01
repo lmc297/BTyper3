@@ -417,7 +417,7 @@ def main():
 
 	parser.add_argument("--ani_geneflow", help = "Optional argument; True or False; assign genome to a pseudo-gene flow unit using the method described by Carroll, et al. using FastANI; default = False", nargs = "?", default = "False")
 
-	parser.add_argument("--ani_typestrains", help = "Optional argument; True or False; calculate ANI values between the query genome relative to all B. cereus s.l. species type strain genomes using FastANI, and report the closest species type strain/highest ANI value; default = False", nargs = "?", default = "False")
+	parser.add_argument("--ani_typestrains", help = "Optional argument; True or False; calculate ANI values between the query genome relative to all B. cereus s.l. species type strain genomes using FastANI, and report the closest species type strain/highest ANI value; default = True", nargs = "?", default = "True")
 
 	parser.add_argument("--virulence", help = "Optional argument; True or False; perform virulence gene detection (required if one wants to assign genomes to biovars Anthracis or Emeticus); default = True", nargs = "?", default = "True")
 
