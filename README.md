@@ -33,7 +33,7 @@ To create a conda environment named `btyper3` and install BTyper3 and all of its
    ```
 4. Install [BTyper3](https://anaconda.org/bioconda/btyper3) by running the following command from your terminal:
    ```console
-   conda install -c bioconda btyper3
+   conda install bioconda::btyper3
    ```
 5. You can now run `btyper3`! Run the following command from your terminal to view all `btyper3` options, or <a href="https://github.com/lmc297/BTyper3/wiki">check the BTyper3 wiki</a> for details:
    ```console
